@@ -1,0 +1,21 @@
+# Travel blog RSS feed sources
+sources:
+  - name: "Travel + Leisure"
+    url: "https://www.travelandleisure.com/feed"
+    category: "luxury"
+    active: false
+    last_checked: null  # We'll update this when we add feed checking
+    quality_score: 8.5
+
+  - name: "Nomadic Matt"
+    url: "https://www.nomadicmatt.com/feed"
+    category: "budget"
+    active: true
+    last_checked: null
+    quality_score: 8.0
+
+  - name: "The Points Guy"
+    url: "https://thepointsguy.com/feed"
+    category: "travel_tips"
+    active: true
+    quality_score: 9

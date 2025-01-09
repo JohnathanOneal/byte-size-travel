@@ -1,0 +1,6 @@
+sources:
+  - name: "Test Feed"
+    url: "https://www.nomadicmatt.com/feed/"
+    category: "test"
+    quality_score: 8.5
+    active: true
