@@ -4,3 +4,9 @@ sources:
     category: "test"
     quality_score: 8.5
     active: true
+
+  - name: "Travel Zoo"
+    url: "https://www.travelzoo.com/feed/"
+    category: "travel_tips"
+    active: true
+    quality_score: 9

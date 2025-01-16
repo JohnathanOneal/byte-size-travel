@@ -168,7 +168,7 @@ def test_prevent_duplicates_across_multiple_runs():
             "active": True
         }
     ]
-    breakpoint()
+
     first_run = populator.populate_all_sources(test_sources)
     second_run = populator.populate_all_sources(test_sources)
 

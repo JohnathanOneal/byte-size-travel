@@ -6,16 +6,16 @@ from typing import Dict, Optional
 
 class Database:
     def __init__(self, db_path: str = ":memory:"):
-        # If not using memory database, ensure it's in data/db
+        # in memory database used for testing
         if db_path == ":memory:":
             self.db_path = db_path
-        else:
+        elif db_path == "main":
             # Create data/db directory if it doesn't exist
             db_dir = Path("data/db")
             db_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Store database in data/db
             self.db_path = str(db_dir / "travel_news.db")
+        else:
+            raise ValueError("Invalid database path")
         
         self.conn = None
         self.setup_database()
