@@ -4,6 +4,7 @@ import logging
 from typing import Dict
 from source_manager import SourceManager
 import requests
+from parsers import email_feed_parser_gmail, rss_feed_parser
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -44,30 +45,29 @@ class PopulateDB:
 
     # Populate Functions
     def populate_single_source(self, source: Dict) -> Dict:
-        """Populate database from a single source, Returns dict with results of operation"""
+        """Populate database from a single source."""
         try:
-            feed = feedparser.parse(source['url'])
-
-            if hasattr(feed, 'bozo_exception'):
-                return {
-                    'success': False,
-                    'error': str(feed.bozo_exception)
-                }
+            if source["type"] == "email":
+                entries = email_feed_parser_gmail(source)
+            elif source["type"] == "rss":
+                entries = rss_feed_parser(source)
+            else:
+                raise ValueError(f"Unsupported source type: {source['type']}")
 
             articles_added = 0
             articles_existing = 0
 
-            for entry in feed.entries[:10]:
+            for entry in entries:
                 article = {
-                    "title": entry.title,
-                    "url": entry.link,
-                    "content": entry.get('description', ''),
-                    "published_date": datetime(*entry.published_parsed[:6]),
-                    "source_name": source['name'],
-                    "source_url": source['url']
+                    "title": entry["title"],
+                    "url": entry["url"],
+                    "content": entry["content"],
+                    "published_date": entry["published_date"],
+                    "source_name": source["name"],
+                    "source_url": entry.get("source_url", ""),
+                    "is_full_content_fetched": entry.get("is_full_content_fetched", None),
                 }
 
-                # Get existing article count before storing
                 cursor = self.db.conn.execute("SELECT COUNT(*) FROM articles WHERE url = ?", (article["url"],))
                 exists_count = cursor.fetchone()[0]
 
@@ -79,16 +79,16 @@ class PopulateDB:
                     articles_existing += 1
 
             return {
-                'success': True,
-                'articles_added': articles_added,
-                'articles_existing': articles_existing
+                "success": True,
+                "articles_added": articles_added,
+                "articles_existing": articles_existing,
             }
 
         except Exception as e:
-            logger.error(f"Error processing feed {source['name']}: {e}")
+            logger.error(f"Error processing source {source['name']}: {e}")
             return {
-                'success': False,
-                'error': str(e)
+                "success": False,
+                "error": str(e),
             }
 
     def populate_all_sources(self, sources=None) -> Dict:
