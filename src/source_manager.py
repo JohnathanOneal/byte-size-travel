@@ -9,7 +9,7 @@ class SourceManager:
             config_path = Path(__file__).parent.parent / "config/sources.yaml"
         
         self.config_path = Path(config_path).resolve()
-        self._KEY_ORDER = ["name", "active", "quality_score", "category", "url", "last_checked", "error"]
+        self._KEY_ORDER = ["name", "active", "quality_score", "category", "url", "last_checked", "error", "type"]
 
     def load_sources(self) -> List[Dict]:
         """Load sources from yaml config file"""
