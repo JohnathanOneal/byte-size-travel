@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "byte_size_travel"
+version = "0.1.0"
+description = "AI Generated Travel Newsletter"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Johnathan Oneal", email = "johmathanoneal@gmail.com" }
+]
+dependencies = [
+    "pyyaml==6.0.1",
+    "feedparser==6.0.11",
+    "pytest==7.4.3",
+    "pytest-asyncio==0.21.1",
+    "requests~=2.32.3",
+    "sendgrid~=6.11.0",
+    "python-dotenv~=1.0.1"
+]
+
+
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

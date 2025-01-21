@@ -1,6 +1,5 @@
 import pytest
 from datetime import datetime
-import feedparser
 from src.populate_db import PopulateDB
 from src.database import Database
 

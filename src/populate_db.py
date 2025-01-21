@@ -2,9 +2,9 @@ import feedparser
 from datetime import datetime
 import logging
 from typing import Dict
-from source_manager import SourceManager
+from src.source_manager import SourceManager
 import requests
-from parsers import email_feed_parser_gmail, rss_feed_parser
+from src.parsers import email_feed_parser_gmail, rss_feed_parser
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

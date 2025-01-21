@@ -4,7 +4,10 @@ from pathlib import Path
 
 
 class SourceManager:
-    def __init__(self, config_path: str = "../config/sources.yaml"):
+    def __init__(self, config_path: str = None):
+        if config_path is None:
+            config_path = Path(__file__).parent.parent / "config/sources.yaml"
+        
         self.config_path = Path(config_path).resolve()
         self._KEY_ORDER = ["name", "active", "quality_score", "category", "url", "last_checked", "error"]
 
