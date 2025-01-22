@@ -12,7 +12,7 @@ sources:
   quality_score: 8.0
   category: budget
   url: https://www.nomadicmatt.com/feed
-  last_checked: '2025-01-21T18:09:32.636271'
+  last_checked: '2025-01-21T18:16:37.780715'
   error: null
   type: rss
 - name: The Points Guy
@@ -20,7 +20,7 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://thepointsguy.com/feed
-  last_checked: '2025-01-21T18:09:33.246931'
+  last_checked: '2025-01-21T18:16:38.798745'
   error: null
   type: rss
 - name: A Walk in the World
@@ -28,7 +28,7 @@ sources:
   quality_score: 9
   category: travel_tips
   url: http://awalkintheworld.com/feed/
-  last_checked: '2025-01-21T18:09:35.447830'
+  last_checked: '2025-01-21T18:16:41.452324'
   error: null
   type: rss
 - name: Against the Compass
@@ -36,7 +36,7 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://againstthecompass.com/en/travel-blog/feed/
-  last_checked: '2025-01-21T18:09:43.929927'
+  last_checked: '2025-01-21T18:16:48.812844'
   error: null
   type: rss
 - name: Travel Zoo
@@ -52,7 +52,7 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://travelfree.info/feed/
-  last_checked: '2025-01-21T18:09:44.438559'
+  last_checked: '2025-01-21T18:16:49.484769'
   error: null
   type: rss
 - name: The Flight Deal
@@ -60,7 +60,7 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://feeds.feedburner.com/TheFlightDeal/
-  last_checked: '2025-01-21T18:09:44.821038'
+  last_checked: '2025-01-21T18:16:49.889290'
   error: null
   type: rss
 - name: Thrift Traveler
@@ -68,7 +68,7 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://thriftytraveler.com/feed/
-  last_checked: '2025-01-21T18:09:45.640063'
+  last_checked: '2025-01-21T18:16:50.957547'
   error: null
   type: rss
 - name: Fly Deal Fare
@@ -76,6 +76,16 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://blog.flydealfare.com/feed/
-  last_checked: '2025-01-21T18:09:46.519317'
+  last_checked: '2025-01-21T18:16:51.807963'
   error: null
   type: rss
+#- name: Daily Drop
+#  active: true
+#  quality_score: 10
+#  category: travel_tips
+#  url: today@travel.dailydrop.com
+#  last_checked:
+#  error: null
+#  type: email
+#  pass: BYTE_SIZE_GMAIL_APP_PASSWORD
+#  provider: BYTE_SIZE_AGGREGATOR

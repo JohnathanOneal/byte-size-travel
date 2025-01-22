@@ -5,18 +5,21 @@ from typing import List, Dict
 from datetime import datetime
 import logging
 import feedparser
+from dotenv import load_dotenv
+import os
 
 # Setup logger
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+load_dotenv()
 
 def email_feed_parser_gmail(source: Dict) -> List[Dict]:
     """Fetch and parse emails from a Gmail inbox using IMAP and App Password."""
     try:
         # IMAP server details for Gmail
         imap_server = "imap.gmail.com"
-        email_account = source["username"]
-        app_password = source["password"]
+        email_account = os.getenv(source["provider"])
+        app_password = os.getenv(source["password"])
 
         # Connect to the Gmail IMAP server
         mail = imaplib.IMAP4_SSL(imap_server)
