@@ -21,6 +21,10 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
         email_account = os.getenv(source["provider"])
         app_password = os.getenv(source["password"])
 
+        if not email_account or not app_password:
+            logger.error(f"Missing credentials for source: {source['name']}")
+            return []
+
         # Connect to the Gmail IMAP server
         mail = imaplib.IMAP4_SSL(imap_server)
         mail.login(email_account, app_password)

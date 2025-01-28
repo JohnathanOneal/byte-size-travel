@@ -42,7 +42,16 @@ class PopulateDB:
             return {"is_valid": False, "error": f"HTTP error: {str(e)}"}
         except Exception as e:
             return {"is_valid": False, "error": f"Unexpected error: {str(e)}"}
-
+        
+    def check_email(self, url: str) -> Dict:
+        """Check if a email is valid and accessible"""
+        # Todo implement, for now just return success
+        return {
+            "is_valid": True,
+            "title": feed.feed.title if "title" in feed.feed else "Unknown",
+            "entry_count": len(feed.entries)
+        }
+    
     # Populate Functions
     def populate_single_source(self, source: Dict) -> Dict:
         """Populate database from a single source."""
@@ -51,8 +60,6 @@ class PopulateDB:
                 entries = email_feed_parser_gmail(source)
             elif source["type"] == "rss":
                 entries = rss_feed_parser(source)
-            else:
-                raise ValueError(f"Unsupported source type: {source['type']}")
 
             articles_added = 0
             articles_existing = 0
@@ -122,7 +129,13 @@ class PopulateDB:
                 continue
 
             # If source is active check if it is a valid feed, if not update source metadata to deactivate it
-            check_result = self.check_feed(source["url"])
+            if source["type"] == "rss":
+                check_result = self.check_feed(source["url"])
+            elif source["type"] == "email":
+                check_result = self.check_email(source["url"])
+            else:
+                raise ValueError(f"Unsupported source type: {source['type']}")
+            
             if not check_result.get('is_valid'):
                 logger.error(f"Skipping invalid source {source['name']}: {check_result['error']}")
                 source['active'] = False
