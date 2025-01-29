@@ -4,7 +4,7 @@ import logging
 from typing import Dict
 from src.source_manager import SourceManager
 import requests
-from src.parsers import email_feed_parser_gmail, rss_feed_parser
+from src.parsers import email_feed_parser_gmail, rss_feed_parser, check_rss_feed, check_email_feed
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,45 +12,6 @@ logger = logging.getLogger(__name__)
 class PopulateDB:
     def __init__(self, db):
         self.db = db
-
-    # Helper Functions
-    def check_feed(self, url: str) -> Dict:
-        """Check if a feed URL is valid and accessible"""
-        try:
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
-
-            # Parse the feed using feedparser
-            feed = feedparser.parse(response.content)
-
-            # feedparser's flag for malformed feeds
-            if feed.bozo:
-                return {"is_valid": False, "error": "Invalid feed format"}
-
-            if not feed.entries:
-                return {"is_valid": False, "error": "No entries found"}
-
-            return {
-                "is_valid": True,
-                "title": feed.feed.title if "title" in feed.feed else "Unknown",
-                "entry_count": len(feed.entries)
-            }
-
-        except requests.exceptions.Timeout:
-            return {"is_valid": False, "error": "Request timed out"}
-        except requests.exceptions.RequestException as e:
-            return {"is_valid": False, "error": f"HTTP error: {str(e)}"}
-        except Exception as e:
-            return {"is_valid": False, "error": f"Unexpected error: {str(e)}"}
-        
-    def check_email(self, url: str) -> Dict:
-        """Check if a email is valid and accessible"""
-        # Todo implement, for now just return success
-        return {
-            "is_valid": True,
-            "title": feed.feed.title if "title" in feed.feed else "Unknown",
-            "entry_count": len(feed.entries)
-        }
     
     # Populate Functions
     def populate_single_source(self, source: Dict) -> Dict:
@@ -130,9 +91,9 @@ class PopulateDB:
 
             # If source is active check if it is a valid feed, if not update source metadata to deactivate it
             if source["type"] == "rss":
-                check_result = self.check_feed(source["url"])
+                check_result = check_rss_feed(source)
             elif source["type"] == "email":
-                check_result = self.check_email(source["url"])
+                check_result = check_email_feed(source)
             else:
                 raise ValueError(f"Unsupported source type: {source['type']}")
             
