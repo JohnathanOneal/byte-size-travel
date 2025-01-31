@@ -1,13 +1,10 @@
 import feedparser
 from datetime import datetime
-import logging
+from config.logging_config import logger
 from typing import Dict
 from src.source_manager import SourceManager
 import requests
 from src.parsers import email_feed_parser_gmail, rss_feed_parser, check_rss_feed, check_email_feed
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 class PopulateDB:
     def __init__(self, db):
@@ -21,6 +18,8 @@ class PopulateDB:
                 entries = email_feed_parser_gmail(source)
             elif source["type"] == "rss":
                 entries = rss_feed_parser(source)
+            else:
+                raise ValueError(f"Unsupported source type: {source['type']}")
 
             articles_added = 0
             articles_existing = 0

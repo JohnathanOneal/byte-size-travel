@@ -7,12 +7,9 @@ from email.header import decode_header
 from datetime import datetime
 import os
 from contextlib import contextmanager
-import logging
+from config.logging_config import logger
 import requests
 
-# Setup logger
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 load_dotenv()
 
 
