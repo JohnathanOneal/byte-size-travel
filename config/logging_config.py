@@ -1,46 +1,41 @@
-import os
+# config/logging_config.py
+from pathlib import Path
 import logging
-import logging.handlers
+from logging.handlers import TimedRotatingFileHandler
 
-# Get the project's root directory (one level above 'config/')
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONFIG_DIR = Path(__file__).parent
+LOG_DIR = CONFIG_DIR.parent / 'logs'
+LOG_DIR.mkdir(exist_ok=True)
 
-# Ensure logs directory is created in the project root
-LOG_DIR = os.path.join(ROOT_DIR, "logs")
-os.makedirs(LOG_DIR, exist_ok=True)
+formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 
-# Log file paths
-LOG_FILE = os.path.join(LOG_DIR, "application.log")
-ERROR_LOG_FILE = os.path.join(LOG_DIR, "errors.log")
 
-# Logger setup (same as before)
-logger = logging.getLogger("app_logger")
-logger.setLevel(logging.DEBUG)
+def _setup_logger(name: str, log_level=logging.INFO) -> logging.Logger:
+    """Internal utility to set up a logger with file rotation"""
+    logger = logging.getLogger(name)
+    logger.setLevel(log_level)
 
-formatter = logging.Formatter(
-    '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "module": "%(module)s", "message": "%(message)s"}'
-)
+    # Clear any existing handlers
+    logger.handlers.clear()
 
-# Console Handler
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
+    # Console handler
+    console = logging.StreamHandler()
+    console.setFormatter(formatter)
+    logger.addHandler(console)
 
-# File Handlers
-file_handler = logging.FileHandler(LOG_FILE)
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+    # File handler
+    file_handler = TimedRotatingFileHandler(
+        LOG_DIR / f'{name}.log',
+        when='midnight',
+        backupCount=7
+    )
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
-error_handler = logging.FileHandler(ERROR_LOG_FILE)
-error_handler.setLevel(logging.ERROR)
-error_handler.setFormatter(formatter)
-logger.addHandler(error_handler)
+    return logger
 
-# Rotating File Handler
-rotating_handler = logging.handlers.RotatingFileHandler(
-    LOG_FILE, maxBytes=5 * 1024 * 1024, backupCount=5
-)
-rotating_handler.setFormatter(formatter)
-logger.addHandler(rotating_handler)
+
+# Define pre configured loggers for import
+fetch_logger = _setup_logger('fetch')
+app_logger = _setup_logger('app')
+debug_logger = _setup_logger('debug', logging.DEBUG)
