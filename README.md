@@ -15,4 +15,7 @@ Sources are managed in `config/sources.yaml`. Each source has:
 - last_checked: Timestamp of last successful check
 
 ## Project Status
-Currently in initial setup phase.
+Phase 0: Basic Content Ingestion (proof of concept)
+Phase 1: Database / Config Overhaul
+Phase 2: Content Enhancement / Classification
+Phase 3: Newsletter Generation
