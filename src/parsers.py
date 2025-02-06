@@ -34,19 +34,35 @@ def gmail_connection(email_account: str, app_password: str):
             logger.warning(f"Issue during IMAP logout: {e}")
 
 
+def decode_payload(part: email.message.Message) -> str:
+    """Robustly decode email payload handling different encodings"""
+    try:
+        # Try the specified charset first
+        charset = part.get_content_charset() or 'utf-8'
+        return part.get_payload(decode=True).decode(charset)
+    except (UnicodeDecodeError, LookupError):
+        # Fallback encoding attempts
+        for encoding in ['utf-8', 'iso-8859-1', 'cp1252']:
+            try:
+                return part.get_payload(decode=True).decode(encoding)
+            except UnicodeDecodeError:
+                continue
+        # Last resort: replace invalid chars
+        return part.get_payload(decode=True).decode('utf-8', errors='replace')
+
+
 def extract_email_body(msg: email.message.Message) -> str:
     """Extract email body with better handling of different content types"""
     if msg.is_multipart():
         for part in msg.walk():
-            content_type = part.get_content_type()
-            if content_type == "text/plain":
+            if part.get_content_type() == "text/plain":
                 try:
-                    return part.get_payload(decode=True).decode()
+                    return decode_payload(part)
                 except Exception as e:
                     logger.warning(f"Failed to decode email part: {e}")
                     continue
     try:
-        return msg.get_payload(decode=True).decode()
+        return decode_payload(msg)
     except Exception as e:
         logger.error(f"Failed to extract email body: {e}")
         return ""
@@ -89,8 +105,8 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
                         part[0].decode(part[1] or 'utf-8') if isinstance(part[0], bytes)
                         else str(part[0]) for part in subject
                     )
-
-                    date_str = msg["date"].replace(" (UTC)", "")
+                    # Remove timezone suffix
+                    date_str = msg['date'].split(' (')[0]
                     try:
                         date = datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S %z")
                     except ValueError:
