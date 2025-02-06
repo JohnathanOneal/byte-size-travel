@@ -1,11 +1,11 @@
 import pytest
 from datetime import datetime
 from src.populate_db import PopulateDB
-from src.database import Database
+from src.fetchdatabase import FetchDatabase
 
 def test_populate_from_single_valid_source():
     """Test populating from a single known good source"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
     
     test_source = {
@@ -22,7 +22,7 @@ def test_populate_from_single_valid_source():
 
 def test_respects_inactive_source():
     """Test that inactive sources are skipped"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
     
     test_source = {
@@ -39,7 +39,7 @@ def test_respects_inactive_source():
 
 def test_handles_invalid_feed():
     """Test handling of invalid feed URL"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
     
     test_source = {
@@ -57,7 +57,7 @@ def test_handles_invalid_feed():
 
 def test_prevents_duplicate_articles():
     """Test that same articles aren't added twice"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
 
     test_source = {
@@ -79,7 +79,7 @@ def test_prevents_duplicate_articles():
 
 def test_populate_from_multiple_sources():
     """Test populating from multiple sources"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
 
     test_sources = [
@@ -107,7 +107,7 @@ def test_populate_from_multiple_sources():
 
 def test_handles_mixed_valid_and_invalid_sources():
     """Test processing both valid and invalid sources together"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
 
     test_sources = [
@@ -134,7 +134,7 @@ def test_handles_mixed_valid_and_invalid_sources():
 
 def test_respects_multiple_inactive_sources():
     """Test handling of multiple inactive sources"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
 
     test_sources = [
@@ -157,7 +157,7 @@ def test_respects_multiple_inactive_sources():
 
 def test_prevent_duplicates_across_multiple_runs():
     """Test that running multiple times doesn't duplicate articles"""
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     populator = PopulateDB(db)
 
     test_sources = [

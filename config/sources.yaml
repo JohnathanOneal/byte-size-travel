@@ -12,28 +12,28 @@ sources:
   quality_score: 8
   category: budget
   url: https://www.nomadicmatt.com/feed
-  last_checked: '2025-02-05T20:52:40.823524'
+  last_checked: '2025-02-06T16:15:48.439350'
   type: rss
 - name: The Points Guy
   active: true
   quality_score: 9
   category: travel_tips
   url: https://thepointsguy.com/feed
-  last_checked: '2025-02-05T20:52:42.238194'
+  last_checked: '2025-02-06T16:15:49.112797'
   type: rss
 - name: A Walk in the World
   active: true
   quality_score: 9
   category: travel_tips
   url: http://awalkintheworld.com/feed/
-  last_checked: '2025-02-05T20:52:44.922680'
+  last_checked: '2025-02-06T16:15:51.289760'
   type: rss
 - name: Against the Compass
   active: true
   quality_score: 9
   category: travel_tips
   url: https://againstthecompass.com/en/travel-blog/feed/
-  last_checked: '2025-02-05T20:52:52.034220'
+  last_checked: '2025-02-06T16:15:55.829312'
   type: rss
 - name: Travel Zoo
   active: false
@@ -48,21 +48,21 @@ sources:
   quality_score: 9
   category: travel_tips
   url: https://travelfree.info/feed/
-  last_checked: '2025-02-05T20:52:53.118815'
+  last_checked: '2025-02-06T16:15:56.373089'
   type: rss
 - name: The Flight Deal
   active: true
   quality_score: 9
   category: travel_tips
   url: https://feeds.feedburner.com/TheFlightDeal/
-  last_checked: '2025-02-05T20:52:53.746195'
+  last_checked: '2025-02-06T16:15:56.942638'
   type: rss
 - name: Thrift Traveler
   active: true
   quality_score: 9
   category: travel_tips
   url: https://thriftytraveler.com/feed/
-  last_checked: '2025-02-05T20:52:54.977411'
+  last_checked: '2025-02-06T16:15:57.862903'
   type: rss
 - name: Fly Deal Fare
   active: false
@@ -78,7 +78,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: today@travel.dailydrop.com
-  last_checked: '2025-02-05T20:53:02.009430'
+  last_checked: '2025-02-06T16:16:02.345748'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -87,7 +87,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: SouthwestAirlines@iluv.southwest.com
-  last_checked: '2025-02-05T20:53:07.913429'
+  last_checked: '2025-02-06T16:16:06.931979'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -96,7 +96,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: jack@content.jacksflightclub.com
-  last_checked: '2025-02-05T20:53:15.717560'
+  last_checked: '2025-02-06T16:16:13.266913'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -105,7 +105,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: jetblueairways@email.jetblue.com
-  last_checked: '2025-02-05T20:53:22.009987'
+  last_checked: '2025-02-06T16:16:17.987774'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -114,7 +114,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: hello@deals.going.com
-  last_checked: '2025-02-05T20:53:27.009621'
+  last_checked: '2025-02-06T16:16:22.641616'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -123,7 +123,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: jesse@dollarflightclub.com
-  last_checked: '2025-02-05T20:53:33.898275'
+  last_checked: '2025-02-06T16:16:27.320677'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -132,7 +132,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: navigator@dollarflightclub.com
-  last_checked: '2025-02-05T20:53:42.047350'
+  last_checked: '2025-02-06T16:16:32.010353'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -141,7 +141,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: smartpoints@dollarflightclub.com
-  last_checked: '2025-02-05T20:53:49.370924'
+  last_checked: '2025-02-06T16:16:36.715262'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -150,7 +150,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: info@mail.lonelyplanet.com
-  last_checked: '2025-02-05T20:53:56.555345'
+  last_checked: '2025-02-06T16:16:40.332169'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
@@ -159,7 +159,7 @@ sources:
   quality_score: 10
   category: travel_tips
   url: detour@travel.jacksflightclub.com
-  last_checked: '2025-02-05T20:54:01.374647'
+  last_checked: '2025-02-06T16:16:44.485216'
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR

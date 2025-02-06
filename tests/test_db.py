@@ -1,15 +1,15 @@
 import pytest
 from datetime import datetime
-from src.database import Database
+from src.fetchdatabase import FetchDatabase
 
 
 def test_can_connect_to_db():
-    db = Database(":memory:")  # SQLite in-memory for testing
+    db = FetchDatabase(":memory:")  # SQLite in-memory for testing
     assert db.is_connected()
 
 
 def test_can_store_article():
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     article = {
         "title": "Test Article",
         "url": "https://example.com/1",
@@ -23,7 +23,7 @@ def test_can_store_article():
 
 
 def test_prevents_duplicate_articles():
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     article = {
         "title": "Test Article",
         "url": "https://example.com/1",
@@ -38,7 +38,7 @@ def test_prevents_duplicate_articles():
 
 
 def test_can_retrieve_stored_article():
-    db = Database(":memory:")
+    db = FetchDatabase(":memory:")
     test_article = {
         "title": "Test Article",
         "url": "https://example.com/1",

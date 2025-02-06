@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Dict, Optional
 
 
-class Database:
+class FetchDatabase:
     def __init__(self, db_path: str = ":memory:"):
         # in memory database used for testing
         if db_path == ":memory:":

@@ -1,8 +1,8 @@
 from src.populate_db import PopulateDB
-from src.database import Database
+from src.fetchdatabase import FetchDatabase
 
 if __name__ == "__main__":
-    db = Database("main")
+    db = FetchDatabase("main")
     populator = PopulateDB(db)
     populator.populate_all_sources()
     # print(db.get_article(1).get('content'))
