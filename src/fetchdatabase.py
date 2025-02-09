@@ -16,7 +16,7 @@ class FetchDatabase:
             self.db_path = str(db_dir / "travel_news.db")
         else:
             raise ValueError("Invalid database path")
-        
+
         self.conn = None
         self.setup_database()
 
@@ -35,7 +35,8 @@ class FetchDatabase:
                 published_date DATETIME,
                 fetched_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 source_name TEXT NOT NULL,
-                source_url TEXT NOT NULL
+                source_url TEXT NOT NULL,
+                is_full_content_fetched BOOLEAN DEFAULT 0
             )
         """)
         self.conn.commit()
@@ -64,15 +65,16 @@ class FetchDatabase:
             # If not exists, insert new
             cursor = self.conn.execute("""
                 INSERT INTO articles 
-                (title, url, content, published_date, source_name, source_url)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (title, url, content, published_date, source_name, source_url, is_full_content_fetched)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 article["title"],
                 article["url"],
                 article["content"],
                 article["published_date"].isoformat(),
                 article["source_name"],
-                article["source_url"]
+                article["source_url"],
+                article.get("is_full_content_fetched", False)
             ))
             self.conn.commit()
             return cursor.lastrowid
@@ -86,7 +88,7 @@ class FetchDatabase:
             result = self.conn.execute(
                 """
                 SELECT id, title, url, content, published_date, 
-                       source_name, source_url, fetched_date
+                       source_name, source_url, fetched_date, is_full_content_fetched
                 FROM articles 
                 WHERE id = ?
                 """,

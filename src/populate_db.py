@@ -39,8 +39,8 @@ class PopulateDB:
                     "content": entry["content"],
                     "published_date": entry["published_date"],
                     "source_name": source["name"],
-                    "source_url": entry.get("source_url", ""),
-                    "is_full_content_fetched": entry.get("is_full_content_fetched", None),
+                    "source_url": source["url"],
+                    "is_full_content_fetched": entry.get("is_full_content_fetched", False),
                 }
 
                 cursor = self.db.conn.execute(
