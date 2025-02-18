@@ -1,7 +1,13 @@
 from pathlib import Path
 import sqlite3
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict, Optional, List
+from config.logging_config import fetch_logger as logger
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 
 class FetchDatabase:
@@ -11,9 +17,9 @@ class FetchDatabase:
             self.db_path = db_path
         elif db_path == "main":
             # Create data/db directory if it doesn't exist
-            db_dir = Path("data/db")
+            db_dir = Path(os.getenv('DATABASE_PATH'))
             db_dir.mkdir(parents=True, exist_ok=True)
-            self.db_path = str(db_dir / "travel_news.db")
+            self.db_path = str(db_dir / "travel_articles.db")
         else:
             raise ValueError("Invalid database path")
 
@@ -102,3 +108,31 @@ class FetchDatabase:
         except sqlite3.Error as e:
             print(f"Error retrieving article: {e}")
             return None
+        
+    def get_articles_without_content(self, batch_size: int = 10) -> List[Dict]:
+        try:
+            cursor = self.conn.execute("""
+                SELECT id, url 
+                FROM articles 
+                WHERE is_full_content_fetched = 0
+                LIMIT ?
+            """, (batch_size,))
+            return [dict(row) for row in cursor.fetchall()]
+        except sqlite3.Error as e:
+            logger.error(f"Error getting articles: {e}")
+            return []
+
+    def update_article_content(self, article_id: int, content: str) -> bool:
+        try:
+            logger.debug(f"DB Connection status: {self.is_connected()}")
+            self.conn.execute("""
+                UPDATE articles 
+                SET content = ?, is_full_content_fetched = 1
+                WHERE id = ?
+            """, (content, article_id))
+            self.conn.commit()
+            logger.info(f"Fetched full content for article {article_id}")
+            return True
+        except sqlite3.Error as e:
+            logger.error(f"Error updating article {article_id}: {e}")
+            return False

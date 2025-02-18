@@ -1,3 +1,5 @@
+# src/parsers.py
+import re
 import feedparser
 from dotenv import load_dotenv
 from typing import Dict, List
@@ -12,7 +14,7 @@ import requests
 from time import perf_counter
 from bs4 import BeautifulSoup
 import email
-from src.source_manager import EmailSource, RSSSource
+from config.source_manager import EmailSource, RSSSource
 
 load_dotenv()
 
@@ -59,6 +61,26 @@ def clean_text(text: str) -> str:
     chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
     return ' '.join(chunk for chunk in chunks if chunk)
 
+def clean_html_content(html_content: str) -> str:
+    try:
+        soup = BeautifulSoup(html_content, 'html.parser')
+        for element in soup(["script", "style", "head"]):
+            element.decompose()
+        text = ' '.join(soup.stripped_strings)
+        
+        # Clean special characters and whitespace
+        # \u200c: zero-width non-joiner
+        # \xa0: non-breaking space
+        # \ufeff: zero-width no-break space
+        # \n: newline
+        text = re.sub(r'[\u200c\xa0\ufeff\n\r\t]', ' ', text)
+        
+        # Remove excessive whitespace and trim
+        return re.sub(r'\s+', ' ', text).strip()
+    except Exception as e:
+        logger.error(f"Failed to clean HTML: {e}")
+        return html_content
+
 
 def extract_email_body(msg: email.message.Message) -> str:
     """Extract email body with HTML parsing and text cleaning"""
@@ -74,7 +96,7 @@ def extract_email_body(msg: email.message.Message) -> str:
             try:
                 decoded_content = decode_payload(part)
                 if part.get_content_type() == "text/plain":
-                    text_content += decoded_content
+                    text_content += decoded_content + "\n"  # Preserve new lines
                 elif part.get_content_type() == "text/html":
                     html_content += decoded_content
             except Exception as e:
@@ -92,26 +114,26 @@ def extract_email_body(msg: email.message.Message) -> str:
             logger.error(f"Failed to extract email body: {e}")
             return ""
 
-    # Prefer HTML content if available
+    # Prefer HTML content but keep a fallback
+    parsed_text = ""
     if html_content:
         try:
             soup = BeautifulSoup(html_content, 'html.parser')
-            # Remove script and style elements
             for element in soup(["script", "style", "head"]):
                 element.decompose()
-            return clean_text(soup.get_text())
+
+            parsed_text = ' '.join(soup.stripped_strings)
         except Exception as e:
             logger.error(f"Failed to parse HTML content: {e}")
-            # Fallback to text content if HTML parsing fails
-            if text_content:
-                return clean_text(text_content)
 
-    # Use plain text if no HTML or HTML parsing failed
-    return clean_text(text_content) if text_content else ""
+    # Use HTML text if valid; otherwise, use plain text
+    final_text = clean_html_content(html_content) if html_content else text_content.strip()
+
+    return final_text
+
 
 
 def email_feed_parser_gmail(source: Dict) -> List[Dict]:
-    """Fetch and parse emails from Gmail with improved logger and error handling"""
     start_time = perf_counter()
     email_account = os.getenv(source["provider"])
     app_password = os.getenv(source["password"])
@@ -141,13 +163,11 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
                     status, msg_data = mail.fetch(email_id, "(RFC822)")
                     msg = email.message_from_bytes(msg_data[0][1])
 
-                    # Parse subject with better error handling
                     subject = decode_header(msg["subject"])
                     full_subject = ''.join(
                         part[0].decode(part[1] or 'utf-8') if isinstance(part[0], bytes)
                         else str(part[0]) for part in subject
                     )
-                    # Remove timezone suffix
                     date_str = msg['date'].split(' (')[0]
                     try:
                         date = datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S %z")
@@ -166,7 +186,7 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
                         f"Processed email {i}/{len(email_ids)} in "
                         f"{perf_counter() - email_start:.2f}s: {full_subject[:50]}..."
                     )
-                except Exception as e:
+                except (UnicodeDecodeError, AttributeError, KeyError, IndexError) as e:
                     logger.error(f"Error processing email {email_id}: {e}", exc_info=True)
                     continue
 
@@ -179,13 +199,11 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
     except imaplib.IMAP4.error as e:
         logger.error(f"IMAP error for {source['name']}: {e}", exc_info=True)
         return []
-    except Exception as e:
-        logger.error(f"Unexpected error for {source['name']}: {e}", exc_info=True)
+    except (OSError, IOError) as e:
+        logger.error(f"IO error for {source['name']}: {e}", exc_info=True)
         return []
 
-
 def rss_feed_parser(source: Dict) -> List[Dict]:
-    """Parse RSS feed with improved logger and error handling"""
     start_time = perf_counter()
     logger.info(f"Fetching RSS feed: {source['url']}")
 
@@ -211,7 +229,7 @@ def rss_feed_parser(source: Dict) -> List[Dict]:
                     "is_full_content_fetched": False,
                 })
                 logger.debug(f"Processed entry {i}/{total_entries}: {entry.title[:50]}...")
-            except Exception as e:
+            except (AttributeError, KeyError, TypeError, ValueError) as e:
                 logger.error(f"Error processing entry {i}: {e}")
                 continue
 
@@ -224,18 +242,16 @@ def rss_feed_parser(source: Dict) -> List[Dict]:
     except requests.exceptions.RequestException as e:
         logger.error(f"HTTP error fetching {source['url']}: {e}", exc_info=True)
         raise
-    except Exception as e:
-        logger.error(f"Unexpected error parsing {source['url']}: {e}", exc_info=True)
+    except (feedparser.CharacterEncodingOverride, feedparser.CharacterEncodingUnknown) as e:
+        logger.error(f"Feed parsing error for {source['url']}: {e}", exc_info=True)
         raise
 
 
 def check_rss_feed(source: Dict) -> Dict:
-    """Validate RSS feed with improved diagnostics"""
     start_time = perf_counter()
     logger.info(f"Checking RSS feed: {source['url']}")
 
     try:
-        # Validate source structure
         source_model = RSSSource(**source)
 
         response = requests.get(str(source_model.url), timeout=30)
@@ -262,18 +278,18 @@ def check_rss_feed(source: Dict) -> Dict:
             "entry_count": len(feed.entries)
         }
 
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
+        logger.error(f"HTTP error checking feed: {e}", exc_info=True)
+        return {"is_valid": False, "error": str(e)}
+    except (ValueError, TypeError, AttributeError) as e:
         logger.error(f"Error validating RSS feed: {e}", exc_info=True)
         return {"is_valid": False, "error": str(e)}
 
-
 def check_email_feed(source: Dict) -> Dict:
-    """Validate email feed with improved diagnostics"""
     start_time = perf_counter()
     logger.info(f"Checking email feed: {source.get('name')}")
 
     try:
-        # Validate source structure
         source_model = EmailSource(**source)
 
         email_account = os.getenv(source_model.provider)
@@ -296,6 +312,9 @@ def check_email_feed(source: Dict) -> Dict:
                 "entry_count": message_count
             }
 
-    except Exception as e:
+    except imaplib.IMAP4.error as e:
+        logger.error(f"IMAP error: {e}", exc_info=True)
+        return {"is_valid": False, "error": str(e)}
+    except (ValueError, TypeError, AttributeError) as e:
         logger.error(f"Error validating email feed: {e}", exc_info=True)
         return {"is_valid": False, "error": str(e)}

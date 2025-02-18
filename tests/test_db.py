@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from src.fetchdatabase import FetchDatabase
+from database.fetch_database import FetchDatabase
 
 
 def test_can_connect_to_db():

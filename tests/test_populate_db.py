@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
-from src.populate_db import PopulateDB
-from src.fetchdatabase import FetchDatabase
+from database.populate_db import PopulateDB
+from database.fetch_database import FetchDatabase
 
 def test_populate_from_single_valid_source():
     """Test populating from a single known good source"""

@@ -2,13 +2,11 @@
 from pathlib import Path
 import logging
 from logging.handlers import TimedRotatingFileHandler
-
-CONFIG_DIR = Path(__file__).parent
-LOG_DIR = CONFIG_DIR.parent / 'logs'
-LOG_DIR.mkdir(exist_ok=True)
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
-
 
 def _setup_logger(name: str, log_level=logging.INFO) -> logging.Logger:
     """Internal utility to set up a logger with file rotation"""
@@ -25,7 +23,7 @@ def _setup_logger(name: str, log_level=logging.INFO) -> logging.Logger:
 
     # File handler
     file_handler = TimedRotatingFileHandler(
-        LOG_DIR / f'{name}.log',
+        Path(os.getenv("LOG_DIR")) / f'{name}.log',
         when='midnight',
         backupCount=7
     )

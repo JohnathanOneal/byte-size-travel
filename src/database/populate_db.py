@@ -2,9 +2,8 @@ import feedparser
 from datetime import datetime
 from config.logging_config import fetch_logger as logger
 from typing import Dict, List, Optional
-from src.source_manager import SourceManager, RSSSource, EmailSource
-import requests
-from src.parsers import email_feed_parser_gmail, rss_feed_parser, check_rss_feed, check_email_feed
+from config.source_manager import SourceManager, RSSSource, EmailSource
+from content.fetching.parsers import email_feed_parser_gmail, rss_feed_parser, check_rss_feed, check_email_feed
 
 
 class PopulateDB:
