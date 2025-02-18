@@ -82,6 +82,7 @@ sources:
   type: email
   password: BYTE_SIZE_GMAIL_APP_PASSWORD
   provider: BYTE_SIZE_AGGREGATOR
+  email_count: 25
 - name: Southwest Airlines
   active: true
   quality_score: 10

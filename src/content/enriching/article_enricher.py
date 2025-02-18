@@ -6,7 +6,7 @@ from services.openai_client import OpenAIClient
 from models.schemas import ProcessedArticle
 
 class ArticleEnricher:
-    def __init__(self, processed_db: ProcessedDatabase, openai_model: str = "gpt-4"):
+    def __init__(self, processed_db: ProcessedDatabase, openai_model: str = "gpt-4o-mini"):
         self.processed_db = processed_db
         self.llm = OpenAIClient(model=openai_model)
 

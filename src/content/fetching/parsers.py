@@ -150,7 +150,7 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
 
             logger.info(f"Fetching up to {email_count} emails from {source_email}")
             status, messages = mail.search(None, f'FROM "{source_email}"')
-            email_ids = messages[0].split()[:email_count]
+            email_ids = messages[0].split()[::-1][:email_count]
 
             if not email_ids:
                 logger.warning(f"No emails found from {source_email}")
