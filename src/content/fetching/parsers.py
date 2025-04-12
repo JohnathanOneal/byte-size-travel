@@ -146,7 +146,7 @@ def email_feed_parser_gmail(source: Dict) -> List[Dict]:
         with gmail_connection(email_account, app_password) as mail:
             mail.select("inbox")
             source_email = source.get("url")
-            email_count = source.get("email_count", 10)
+            email_count = source.get("email_count", 20)
 
             logger.info(f"Fetching up to {email_count} emails from {source_email}")
             status, messages = mail.search(None, f'FROM "{source_email}"')

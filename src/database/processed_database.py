@@ -65,7 +65,7 @@ class ProcessedDatabase:
             """
             values = (
                 article.fetched_article_id,
-                article.content_type,
+                json.dumps(article.content_type),
                 article.deal_data.model_dump_json() if article.deal_data else None,
                 article.locations.model_dump_json(),
                 json.dumps(article.audience),

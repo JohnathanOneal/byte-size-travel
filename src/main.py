@@ -30,7 +30,7 @@ def main():
     # Load environment variables
     load_environment()
 
-    # populate db with content from our sources
+    # # populate db with content from our sources
     # fetch_db = FetchDatabase("main")
     # populator = PopulateDB(fetch_db)
     # populator.populate_all_sources()

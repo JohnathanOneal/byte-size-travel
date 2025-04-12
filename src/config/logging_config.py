@@ -35,5 +35,6 @@ def _setup_logger(name: str, log_level=logging.INFO) -> logging.Logger:
 
 # Define pre configured loggers for import
 fetch_logger = _setup_logger('fetch')
+enrich_logger = _setup_logger('enrich')
 app_logger = _setup_logger('app')
 debug_logger = _setup_logger('debug', logging.DEBUG)

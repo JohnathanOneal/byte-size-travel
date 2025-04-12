@@ -1,29 +1,48 @@
 from datetime import datetime, date
-from typing import List, Optional, Dict
-from pydantic import BaseModel, field_validator
+from typing import List, Optional, Dict, Union
+from pydantic import BaseModel, field_validator, model_validator, Field
+
+class TravelWindow(BaseModel):
+    # Accept either date or string (including empty string)
+    start: Union[date, str] = ''
+    end: Union[date, str] = ''
 
 class DealData(BaseModel):
-    type: Optional[str] = None
-    price_tier: Optional[str] = None
+    type: Union[str, List[str]] = Field(default_factory=list)
+    price_tier: Union[str, List[str]] = Field(default_factory=list)
     value_score: Optional[int] = None
-    booking_deadline: Optional[date] = None
-    travel_window: Optional[Dict[str, date]] = None
-    origin: Optional[str] = None
-    destination: Optional[str] = None
-
-    @field_validator('*', mode='before')
-    def validate_all_or_none(cls, v, values):
-        # Get all values including the current field
-        all_values = list(values.values()) + [v]
-        
-        # Filter out None values
-        non_none_values = [x for x in all_values if x is not None]
-        
-        # Check if we have either all values or no values
-        if len(non_none_values) not in [0, len(all_values)]:
-            raise ValueError('Either all fields must be populated or all must be None')
-        
-        return v
+    booking_deadline: Union[date, str] = ''
+    travel_window: Optional[TravelWindow] = None
+    origin: Union[str, List[str]] = ''
+    destination: Union[str, List[str]] = ''
+    
+    # Validators to normalize data
+    @field_validator('type', 'price_tier', mode='before')
+    @classmethod
+    def normalize_list_fields(cls, value):
+        # Convert string to a single-item list
+        if isinstance(value, str) and value:
+            return [value]
+        # Ensure we return an empty list for None values
+        elif value is None:
+            return []
+        return value
+    
+    @field_validator('origin', 'destination', mode='before')
+    @classmethod
+    def normalize_string_fields(cls, value):
+        # Handle list with a single value by converting to string
+        if isinstance(value, list) and len(value) == 1:
+            return value[0]
+        return value
+    
+    @field_validator('price_tier', 'type', mode='before')
+    @classmethod
+    def ensure_list(cls, value):
+        # Ensure these are always lists
+        if value is None:
+            return []
+        return value
 
 class Locations(BaseModel):
     primary: str
@@ -32,7 +51,7 @@ class Locations(BaseModel):
 class ProcessedArticle(BaseModel):
     id: Optional[int] = None
     fetched_article_id: int
-    content_type: str
+    content_type: List[str]
     deal_data: Optional[DealData] = None
     locations: Locations
     audience: List[str]
