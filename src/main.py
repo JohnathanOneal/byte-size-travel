@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from content.enriching.article_enricher import ArticleEnricher
 from content.selection.article_selector import ArticleSelector
+from content.writing.newsletter_writer import NewsletterWriter
 
 from config.logging_config import app_logger as logger
 
@@ -41,22 +42,30 @@ def main():
     # fetch_db.conn.close()
     
     # process data adding enriched metadata
-    processed_db = ProcessedDatabase("main")
-    enricher = ArticleEnricher(
-        processed_db=processed_db,
-        openai_model=os.getenv('OPENAI_MODEL')
-    )
-    processed_count = enricher.process_pending_articles()
-    logger.info(f"Processed {processed_count} new articles")
+    # processed_db = ProcessedDatabase("main")
+    # enricher = ArticleEnricher(
+    #     processed_db=processed_db,
+    #     openai_model=os.getenv('OPENAI_MODEL')
+    # )
+    # processed_count = enricher.process_pending_articles()
+    # logger.info(f"Processed {processed_count} new articles")
     
     # Select newsletter content using enriched metadata
-    # selector = ArticleSelector(processed_db)
-    # try:
-    #     newsletter_content = selector.select_newsletter_content()
-    #     print("Newsletter content selected successfully")
-    # except ValueError as e:
-    #     print(f"Error selecting newsletter content: {str(e)}")
-    
+    processed_db = ProcessedDatabase("main")
+    selector = ArticleSelector(processed_db)
+    try:
+        newsletter_content = selector.select_newsletter_content()
+        print("Newsletter content selected successfully")
+    except ValueError as e:
+        print(f"Error selecting newsletter content: {str(e)}")
+    breakpoint()
+    # Initialize the writer
+    newsletter_writer = NewsletterWriter(processed_db)
+
+    # Generate newsletter in test mode (no stats updates)
+    test_newsletter = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
+    print(test_newsletter)
+
     # Clean up
     processed_db.conn.close()
 
