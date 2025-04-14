@@ -1,4 +1,5 @@
 import os
+import json
 from database.populate_db import PopulateDB
 from database.fetch_database import FetchDatabase
 from database.processed_database import ProcessedDatabase
@@ -41,7 +42,7 @@ def main():
     # fetcher.fetch_pending_content()
     # fetch_db.conn.close()
     
-    # process data adding enriched metadata
+    # # process data adding enriched metadata
     # processed_db = ProcessedDatabase("main")
     # enricher = ArticleEnricher(
     #     processed_db=processed_db,
@@ -58,13 +59,11 @@ def main():
         print("Newsletter content selected successfully")
     except ValueError as e:
         print(f"Error selecting newsletter content: {str(e)}")
-    breakpoint()
-    # Initialize the writer
-    newsletter_writer = NewsletterWriter(processed_db)
 
-    # Generate newsletter in test mode (no stats updates)
-    test_newsletter = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
-    print(test_newsletter)
+    # Generate the newsletter
+    newsletter_writer = NewsletterWriter(processed_db)
+    sendgrid_json = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
+    print(json.dumps(sendgrid_json, indent=2))
 
     # Clean up
     processed_db.conn.close()
