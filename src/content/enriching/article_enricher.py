@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Dict
 from pydantic import ValidationError
 from database.processed_database import ProcessedDatabase
-from services.openai_client import OpenAIClient
+from services.openai.openai_client import OpenAIClient
 from models.schemas import ProcessedArticle
 from config.logging_config import fetch_logger as logger
 
