@@ -13,42 +13,69 @@ class NewsletterWriter:
         self.processed_db = processed_db
         self.llm = OpenAIClient(model=openai_model)
         logger.info(f"NewsletterWriter initialized with model: {openai_model}")
+            
+    def generate_newsletter(self, newsletter_content: Dict[str, Any], mode: str = "real") -> Dict[str, Any]:
+        """Generate a newsletter based on the content provided and return it as a structured JSON object."""
+        logger.info(f"Generating newsletter in {mode} mode")
         
-        # A comprehensive system prompt that gives clear instructions
-        self.system_prompt = """
-        You are an expert travel newsletter writer for "ByteSize Travel Deals." Your task is to create an engaging weekly newsletter highlighting the best travel deals, destination guides, and practical travel tips. I'll provide you with selected travel content including deals, guides, tips, and seasonal experiences.
+        # Get metadata for edition info
+        include_seasonal = False
+        if 'metadata' in newsletter_content:
+            metadata = newsletter_content['metadata']
+            edition_date = datetime.now().strftime("%B %d, %Y")
+            edition_title = f"Travel Deals: {metadata.get('destination_focus', 'Global Destinations')}"
+            edition_tagline = f"Discover amazing deals for {metadata.get('season', 'this season')}"
+            include_seasonal = metadata.get('include_seasonal', False)
+        else:
+            edition_date = datetime.now().strftime("%B %d, %Y")
+            edition_title = "Travel Deals Weekly"
+            edition_tagline = "Explore the world for less"
+        
+        # Update system prompt based on the new structure
+        system_prompt = """
+        You are an expert travel newsletter writer for "ByteSize Travel Deals." Your task is to create an engaging tri-weekly newsletter highlighting the best travel deals, destination guides, and travel news. I'll provide you with selected travel content including deals, guides, tips, and news articles.
 
         Create a comprehensive newsletter with these sections:
 
         1. **Introduction** - A warm, personalized greeting that establishes the newsletter's theme and connects with readers
         
-        2. **FEATURED DEAL** - Highlight the main travel deal with complete details:
+        2. **FEATURED DEALS** - Highlight 2-3 travel deals with complete details for each:
         - Destination description with cultural context
         - Comprehensive pricing information
         - Clear booking deadline and travel window
-        - What makes this offer exceptional value
+        - What makes each offer exceptional value
         - Any restrictions or important notes
 
-        3. **DESTINATION GUIDES** - In-depth coverage of 2-3 relevant destinations:
+        3. **DESTINATION GUIDES** - In-depth coverage of 1-2 relevant destinations:
         - Historical and cultural background
         - Specific attractions with context on why they matter
         - Local cuisine recommendations
-        - Off-the-beaten-path experiences
         - Practical visitor information
 
-        4. **SEASONAL INSPIRATION** - Thoughtful travel ideas aligned with current/upcoming season:
-        - Events and festivals worth planning around
-        - Weather considerations and preparation
-        - Seasonal attractions at their peak
-        - Alternative destinations that offer unique seasonal experiences
+        4. **TRAVEL NEWS** - Latest updates from the travel world:
+        - Recent developments affecting travelers
+        - New airline routes or policy changes
+        - Emerging destinations or trends
+        - Industry updates relevant to travelers
 
         5. **TRAVEL TIPS** - Substantive advice for travelers:
         - Budget-conscious strategies with specific examples
         - Packing recommendations for different conditions
         - Technology tools that enhance travel experiences
         - Cultural etiquette considerations
-
-        6. **Conclusion** - Meaningful closing thoughts with a clear, compelling call to action
+        """
+        
+        # Add seasonal section if needed
+        if include_seasonal:
+            system_prompt += """
+        6. **SEASONAL INSPIRATION** - Thoughtful travel ideas aligned with current/upcoming season:
+        - Events and festivals worth planning around
+        - Weather considerations and preparation
+        - Seasonal attractions at their peak
+            """
+        
+        system_prompt += """
+        7. **Conclusion** - Meaningful closing thoughts with a clear, compelling call to action
 
         Guidelines:
         - Format in Markdown with clear, hierarchical headings and subheadings
@@ -65,20 +92,22 @@ class NewsletterWriter:
         
         IMPORTANT: Structure the markdown with specific headings for each section so I can easily extract them later:
         # Introduction
-        # Featured Deal
+        # Featured Deals
         # Destination Guides
-        # Seasonal Inspiration
+        # Travel News
         # Travel Tips
-        # Conclusion
+        """
+        if include_seasonal:
+            system_prompt += "# Seasonal Inspiration\n"
+        
+        system_prompt += """# Conclusion
         
         For each Destination Guide, use a ## heading with the destination name.
+        For each Featured Deal, use a ## heading with the deal name/destination.
+        For each Travel News item, use a ## heading with the news title.
         
         Use standard markdown formatting for emphasis (**bold**, *italic*), lists, and [links](url).
         """
-            
-    def generate_newsletter(self, newsletter_content: Dict[str, Any], mode: str = "real") -> Dict[str, Any]:
-        """Generate a newsletter based on the content provided and return it as a structured JSON object."""
-        logger.info(f"Generating newsletter in {mode} mode")
         
         # Simply concatenate all content with clear section headers
         content = "# NEWSLETTER CONTENT\n\n"
@@ -90,23 +119,14 @@ class NewsletterWriter:
             content += f"Current Season: {metadata.get('season', 'Not specified')}\n"
             content += f"Upcoming Season: {metadata.get('upcoming_season', 'Not specified')}\n"
             content += f"Destination Focus: {metadata.get('destination_focus', 'Not specified')}\n\n"
-            
-            # Add edition info for SendGrid template
-            edition_date = datetime.now().strftime("%B %d, %Y")
-            edition_title = f"Travel Deals: {metadata.get('destination_focus', 'Global Destinations')}"
-            edition_tagline = f"Discover amazing deals for {metadata.get('season', 'this season')}"
-        else:
-            edition_date = datetime.now().strftime("%B %d, %Y")
-            edition_title = "Travel Deals Weekly"
-            edition_tagline = "Explore the world for less"
         
-        # Add featured deal (full content)
-        if 'featured_deal' in newsletter_content:
-            deal = newsletter_content['featured_deal']
-            content += "## FEATURED DEAL\n"
-            content += f"Title: {deal.get('title', 'No title')}\n"
-            content += f"Deal Data: {deal.get('deal_data', '')}\n"
-            content += f"Content: {deal.get('content', '')}\n\n"
+        # Add featured deals (full content)
+        if 'featured_deals' in newsletter_content and newsletter_content['featured_deals']:
+            content += "## FEATURED DEALS\n"
+            for i, deal in enumerate(newsletter_content['featured_deals']):
+                content += f"### Deal {i+1}: {deal.get('title', 'No title')}\n"
+                content += f"Deal Data: {deal.get('deal_data', '')}\n"
+                content += f"Content: {deal.get('content', '')}\n\n"
         
         # Add featured destination guides (full content)
         if 'featured_destination_guides' in newsletter_content and newsletter_content['featured_destination_guides']:
@@ -115,13 +135,12 @@ class NewsletterWriter:
                 content += f"### Guide: {guide.get('title', 'No title')}\n"
                 content += f"Content: {guide.get('content', '')}\n\n"
         
-        # Add related deals (full content)
-        if 'related_deals' in newsletter_content and newsletter_content['related_deals']:
-            content += "## RELATED DEALS\n"
-            for deal in newsletter_content['related_deals']:
-                content += f"### Deal: {deal.get('title', 'No title')}\n"
-                content += f"Deal Data: {deal.get('deal_data', '')}\n"
-                content += f"Content: {deal.get('content', '')}\n\n"
+        # Add travel news (full content)
+        if 'travel_news' in newsletter_content and newsletter_content['travel_news']:
+            content += "## TRAVEL NEWS\n"
+            for i, news in enumerate(newsletter_content['travel_news']):
+                content += f"### News {i+1}: {news.get('title', 'No title')}\n"
+                content += f"Content: {news.get('content', '')}\n\n"
         
         # Add practical tips (full content)
         if 'practical_tips' in newsletter_content and newsletter_content['practical_tips']:
@@ -130,30 +149,24 @@ class NewsletterWriter:
                 content += f"### Tip: {tip.get('title', 'No title')}\n"
                 content += f"Content: {tip.get('content', '')}\n\n"
         
-        # Add seasonal experience (full content)
-        if 'seasonal_experience' in newsletter_content:
+        # Add seasonal experience (only if include_seasonal is True)
+        if include_seasonal and 'seasonal_experience' in newsletter_content:
             experience = newsletter_content['seasonal_experience']
             content += "## SEASONAL EXPERIENCE\n"
             content += f"Title: {experience.get('title', 'No title')}\n"
             content += f"Content: {experience.get('content', '')}\n\n"
         
-        # Add travel news (full content)
-        if 'travel_news' in newsletter_content:
-            news = newsletter_content['travel_news']
-            content += "## TRAVEL NEWS\n"
-            content += f"Title: {news.get('title', 'No title')}\n"
-            content += f"Content: {news.get('content', '')}\n\n"
-        
         # Generate newsletter with LLM
         try:
-            markdown_newsletter = self.llm.analyze(self.system_prompt, content)
+            markdown_newsletter = self.llm.analyze(system_prompt, content)
             
             # Parse the markdown into structured JSON for SendGrid
             sendgrid_data = self._markdown_to_sendgrid_json(
                 markdown_newsletter, 
                 edition_title.title(), 
                 edition_tagline, 
-                edition_date
+                edition_date,
+                include_seasonal
             )
             
             # Update usage statistics if in real mode
@@ -188,7 +201,7 @@ class NewsletterWriter:
         
         return html
     
-    def _markdown_to_sendgrid_json(self, markdown_text: str, edition_title: str, edition_tagline: str, edition_date: str) -> Dict[str, Any]:
+    def _markdown_to_sendgrid_json(self, markdown_text: str, edition_title: str, edition_tagline: str, edition_date: str, include_seasonal: bool = False) -> Dict[str, Any]:
         """Convert markdown newsletter to SendGrid-compatible JSON structure."""
         # Default placeholder image URLs - using a consistent placeholder for now
         default_image_url = "https://placehold.co/600x400/faedca/0c457d?text=Travel"
@@ -207,16 +220,11 @@ class NewsletterWriter:
                 "date": edition_date
             },
             "introduction": {"content": ""},
-            "featured_deal": {
-                "title": "Special Travel Deal",
-                "content": "",
-                "button_text": "Book Now!",
-                "button_url": "https://bytesizetravel.com/explore"
-            },
+            "featured_deals": [],
             "destination_guides": [],
-            "seasonal_inspiration": {
-                "title": "Seasonal Travel Ideas",
-                "content": ""
+            "travel_news": {
+                "title": "Travel News",
+                "items": []
             },
             "travel_tips": {
                 "title": "Smart Travel Tips",
@@ -238,30 +246,53 @@ class NewsletterWriter:
             }
         }
         
+        # Add seasonal section if needed
+        if include_seasonal:
+            json_data["seasonal_inspiration"] = {
+                "title": "Seasonal Travel Ideas",
+                "content": ""
+            }
+        
         # Extract sections using regex
         sections = {
-            "introduction": re.search(r'# Introduction\s+(.*?)(?=# Featured Deal|\Z)', markdown_text, re.DOTALL),
-            "featured_deal": re.search(r'# Featured Deal\s+(.*?)(?=# Destination Guides|\Z)', markdown_text, re.DOTALL),
-            "destination_guides": re.search(r'# Destination Guides\s+(.*?)(?=# Seasonal Inspiration|\Z)', markdown_text, re.DOTALL),
-            "seasonal_inspiration": re.search(r'# Seasonal Inspiration\s+(.*?)(?=# Travel Tips|\Z)', markdown_text, re.DOTALL),
-            "travel_tips": re.search(r'# Travel Tips\s+(.*?)(?=# Conclusion|\Z)', markdown_text, re.DOTALL),
+            "introduction": re.search(r'# Introduction\s+(.*?)(?=# Featured Deals|\Z)', markdown_text, re.DOTALL),
+            "featured_deals": re.search(r'# Featured Deals\s+(.*?)(?=# Destination Guides|\Z)', markdown_text, re.DOTALL),
+            "destination_guides": re.search(r'# Destination Guides\s+(.*?)(?=# Travel News|\Z)', markdown_text, re.DOTALL),
+            "travel_news": re.search(r'# Travel News\s+(.*?)(?=# Travel Tips|\Z)', markdown_text, re.DOTALL),
+            "travel_tips": re.search(r'# Travel Tips\s+(.*?)(?=# Seasonal Inspiration|# Conclusion|\Z)', markdown_text, re.DOTALL),
             "conclusion": re.search(r'# Conclusion\s+(.*?)(?=\Z)', markdown_text, re.DOTALL)
         }
+        
+        if include_seasonal:
+            sections["seasonal_inspiration"] = re.search(r'# Seasonal Inspiration\s+(.*?)(?=# Conclusion|\Z)', markdown_text, re.DOTALL)
         
         # Fill in the sections from the markdown
         if sections["introduction"]:
             intro_content = sections["introduction"].group(1).strip()
             json_data["introduction"]["content"] = self._convert_markdown_to_html(intro_content)
         
-        if sections["featured_deal"]:
-            featured_deal_content = sections["featured_deal"].group(1).strip()
-            # Extract title if it exists
-            title_match = re.search(r'^## (.*?)$', featured_deal_content, re.MULTILINE)
-            if title_match:
-                json_data["featured_deal"]["title"] = title_match.group(1).strip()
-                # Remove the title from the content
-                featured_deal_content = re.sub(r'^## .*?$\n', '', featured_deal_content, 1, re.MULTILINE)
-            json_data["featured_deal"]["content"] = self._convert_markdown_to_html(featured_deal_content)
+        # Process featured deals (multiple)
+        if sections["featured_deals"]:
+            deals_content = sections["featured_deals"].group(1).strip()
+            # Look for ## headings to separate individual deals
+            deal_sections = re.findall(r'## (.*?)$(.*?)(?=## |\Z)', deals_content, re.DOTALL | re.MULTILINE)
+            
+            for title, content in deal_sections:
+                json_data["featured_deals"].append({
+                    "title": title.strip(),
+                    "content": self._convert_markdown_to_html(content.strip()),
+                    "button_text": "Book Now!",
+                    "button_url": "https://bytesizetravel.com/deals"
+                })
+            
+            # If no deals were found with ## headings, use the whole section
+            if not deal_sections:
+                json_data["featured_deals"].append({
+                    "title": "Special Travel Deal",
+                    "content": self._convert_markdown_to_html(deals_content),
+                    "button_text": "Book Now!",
+                    "button_url": "https://bytesizetravel.com/deals"
+                })
         
         if sections["destination_guides"]:
             guides_content = sections["destination_guides"].group(1).strip()
@@ -283,15 +314,24 @@ class NewsletterWriter:
                     "image_url": default_image_url  # Using placeholder until image system is implemented
                 })
         
-        if sections["seasonal_inspiration"]:
-            seasonal_content = sections["seasonal_inspiration"].group(1).strip()
-            # Extract title if it exists
-            title_match = re.search(r'^## (.*?)$', seasonal_content, re.MULTILINE)
-            if title_match:
-                json_data["seasonal_inspiration"]["title"] = title_match.group(1).strip()
-                # Remove the title from the content
-                seasonal_content = re.sub(r'^## .*?$\n', '', seasonal_content, 1, re.MULTILINE)
-            json_data["seasonal_inspiration"]["content"] = self._convert_markdown_to_html(seasonal_content)
+        # Process travel news (multiple items)
+        if sections["travel_news"]:
+            news_content = sections["travel_news"].group(1).strip()
+            # Look for ## headings to separate individual news items
+            news_sections = re.findall(r'## (.*?)$(.*?)(?=## |\Z)', news_content, re.DOTALL | re.MULTILINE)
+            
+            for title, content in news_sections:
+                json_data["travel_news"]["items"].append({
+                    "title": title.strip(),
+                    "content": self._convert_markdown_to_html(content.strip())
+                })
+            
+            # If no news items were found with ## headings, use the whole section
+            if not news_sections:
+                json_data["travel_news"]["items"].append({
+                    "title": "Travel Industry Updates",
+                    "content": self._convert_markdown_to_html(news_content)
+                })
         
         if sections["travel_tips"]:
             tips_content = sections["travel_tips"].group(1).strip()
@@ -302,6 +342,16 @@ class NewsletterWriter:
                 # Remove the title from the content
                 tips_content = re.sub(r'^## .*?$\n', '', tips_content, 1, re.MULTILINE)
             json_data["travel_tips"]["content"] = self._convert_markdown_to_html(tips_content)
+        
+        if include_seasonal and sections.get("seasonal_inspiration"):
+            seasonal_content = sections["seasonal_inspiration"].group(1).strip()
+            # Extract title if it exists
+            title_match = re.search(r'^## (.*?)$', seasonal_content, re.MULTILINE)
+            if title_match:
+                json_data["seasonal_inspiration"]["title"] = title_match.group(1).strip()
+                # Remove the title from the content
+                seasonal_content = re.sub(r'^## .*?$\n', '', seasonal_content, 1, re.MULTILINE)
+            json_data["seasonal_inspiration"]["content"] = self._convert_markdown_to_html(seasonal_content)
         
         if sections["conclusion"]:
             conclusion_content = sections["conclusion"].group(1).strip()

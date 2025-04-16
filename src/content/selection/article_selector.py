@@ -190,10 +190,10 @@ class ArticleSelector:
     
     def select_newsletter_content(self) -> Dict[str, Any]:
         """
-        Select cohesive content for a travel newsletter.
+        Select cohesive content for a tri-weekly travel newsletter.
         
-        Groups content by theme and ensures guides are relevant to featured deals.
-        Tips and news are consolidated and more focused.
+        Focuses on multiple deals and news, with less emphasis on seasonal content.
+        Guides are still relevant to featured deals but seasonal content is reduced.
         
         Returns a structured content object for the LLM to use.
         """
@@ -203,7 +203,7 @@ class ArticleSelector:
         current_season = season_params['current_season']
         next_season = season_params['next_season']
         
-        # 1. Featured deal - high value, future deadline, never used
+        # 1. Featured deals (2-3) - high value, future deadline, never used
         deal_freshness = self.get_freshness_clause('deal')
         cursor = self.processed_db.conn.execute(f"""
             SELECT * FROM processed_articles 
@@ -225,11 +225,11 @@ class ArticleSelector:
                     WHEN date(json_extract(deal_data, '$.booking_deadline')) < date('now', '+30 days') THEN 1
                     ELSE 0
                 END DESC
-            LIMIT 1
+            LIMIT 3
         """)
-        featured_deal = cursor.fetchone()
+        featured_deals = cursor.fetchall()
         
-        if not featured_deal:
+        if not featured_deals:
             # Fallback to any future deal
             cursor = self.processed_db.conn.execute("""
                 SELECT * FROM processed_articles 
@@ -238,23 +238,27 @@ class ArticleSelector:
                 AND json_extract(deal_data, '$.booking_deadline') IS NOT NULL
                 AND date(json_extract(deal_data, '$.booking_deadline')) > date('now')
                 ORDER BY date(json_extract(deal_data, '$.booking_deadline')) ASC
-                LIMIT 1
+                LIMIT 3
             """)
-            featured_deal = cursor.fetchone()
+            featured_deals = cursor.fetchall()
         
-        if not featured_deal:
+        if not featured_deals:
             raise ValueError("No future deals found for newsletter")
         
-        featured_details = self.get_article_details([featured_deal['id']])[0]
-        newsletter_content['featured_deal'] = {**dict(featured_details), **dict(featured_deal)}
-        selected_article_ids.append(featured_deal['id'])
+        featured_deal_details = self.get_article_details([deal['id'] for deal in featured_deals])
+        newsletter_content['featured_deals'] = [
+            {**dict(deal), **next((d for d in featured_deal_details if d['id'] == deal['fetched_article_id']), {})}
+            for deal in featured_deals
+        ]
+        selected_article_ids.extend([deal['id'] for deal in featured_deals])
         
-        # Extract featured deal location for related content
-        featured_location = self.extract_location(featured_deal['locations'])
+        # Extract primary featured deal location for related content
+        primary_featured_deal = featured_deals[0]
+        featured_location = self.extract_location(primary_featured_deal['locations'])
         deal_destination = ''
         
         try:
-            deal_data = json.loads(featured_deal['deal_data']) if isinstance(featured_deal['deal_data'], str) else featured_deal['deal_data']
+            deal_data = json.loads(primary_featured_deal['deal_data']) if isinstance(primary_featured_deal['deal_data'], str) else primary_featured_deal['deal_data']
             if deal_data and 'destination' in deal_data:
                 deal_destination = deal_data['destination'].lower()
         except:
@@ -284,66 +288,59 @@ class ArticleSelector:
             if guide_location and guide_location != 'worldwide':
                 newsletter_content['destination_focus'] = guide_location
         
-        # 3. Related deals - different locations
-        deal_freshness = self.get_freshness_clause('deal')
+        # 3. Add more deals from different locations if needed
+        if len(featured_deals) < 3:
+            more_deals_needed = 3 - len(featured_deals)
+            deal_freshness = self.get_freshness_clause('deal')
+            placeholders = ','.join('?' * len(selected_article_ids)) if selected_article_ids else "0"
+            
+            cursor = self.processed_db.conn.execute(f"""
+                SELECT * FROM processed_articles 
+                WHERE json_array_length(content_type) > 0
+                AND json_extract(content_type, '$[0]') = 'deal'
+                AND json_extract(deal_data, '$.booking_deadline') IS NOT NULL
+                AND date(json_extract(deal_data, '$.booking_deadline')) > date('now')
+                AND id NOT IN ({placeholders})
+                {deal_freshness}
+                ORDER BY 
+                    CAST(json_extract(deal_data, '$.value_score') AS REAL) DESC
+                LIMIT ?
+            """, selected_article_ids + [more_deals_needed])
+            more_deals = cursor.fetchall()
+            
+            if more_deals:
+                more_deal_details = self.get_article_details([deal['id'] for deal in more_deals])
+                # Add to featured deals list
+                for deal, details in zip(more_deals, more_deal_details):
+                    newsletter_content['featured_deals'].append({**dict(deal), **dict(details)})
+                selected_article_ids.extend([deal['id'] for deal in more_deals])
+        
+        # 4. Add multiple travel news items (2-3 articles)
+        news_freshness = self.get_freshness_clause('news')
         placeholders = ','.join('?' * len(selected_article_ids)) if selected_article_ids else "0"
         
         cursor = self.processed_db.conn.execute(f"""
-            SELECT * FROM processed_articles 
+            SELECT * FROM processed_articles
             WHERE json_array_length(content_type) > 0
-            AND json_extract(content_type, '$[0]') = 'deal'
-            AND json_extract(deal_data, '$.booking_deadline') IS NOT NULL
-            AND date(json_extract(deal_data, '$.booking_deadline')) > date('now')
+            AND json_extract(content_type, '$[0]') = 'news'
             AND id NOT IN ({placeholders})
-            {deal_freshness}
-            AND (
-                json_extract(locations, '$.primary') != ? 
-                OR json_extract(locations, '$.primary') IS NULL
-            )
+            {news_freshness}
             ORDER BY 
-                CASE 
-                    WHEN json_extract(seasonality, '$.{current_season}') > 0 THEN 3
-                    WHEN json_extract(seasonality, '$.{next_season}') > 0 THEN 2
-                    ELSE 1
-                END DESC,
-                CAST(json_extract(deal_data, '$.value_score') AS REAL) DESC
-            LIMIT 2
-        """, selected_article_ids + [featured_location])
-        related_deals = cursor.fetchall()
+                processed_date DESC,
+                last_used IS NULL DESC
+            LIMIT 3
+        """, selected_article_ids)
+        travel_news = cursor.fetchall()
         
-        secondary_locations = []
-        if related_deals:
-            related_details = self.get_article_details([deal['id'] for deal in related_deals])
-            newsletter_content['related_deals'] = [
-                {**dict(deal), **next((d for d in related_details if d['id'] == deal['fetched_article_id']), {})}
-                for deal in related_deals
+        if travel_news:
+            news_details = self.get_article_details([news['id'] for news in travel_news])
+            newsletter_content['travel_news'] = [
+                {**dict(news), **next((d for d in news_details if d['id'] == news['fetched_article_id']), {})}
+                for news in travel_news
             ]
-            selected_article_ids.extend([deal['id'] for deal in related_deals])
-            
-            # Extract secondary locations for finding more guides
-            for deal in related_deals:
-                loc = self.extract_location(deal['locations'])
-                if loc and loc != 'worldwide' and loc != featured_location:
-                    secondary_locations.append(loc)
+            selected_article_ids.extend([news['id'] for news in travel_news])
         else:
-            newsletter_content['related_deals'] = []
-        
-        # 4. Find guides for secondary locations
-        secondary_guides = []
-        for location in secondary_locations:
-            guides = self.find_location_matching_guides(location, selected_article_ids)
-            if guides:
-                secondary_guides.extend(guides)
-                selected_article_ids.extend([g['id'] for g in guides])
-                if len(secondary_guides) >= 2:
-                    break
-        
-        if secondary_guides:
-            guide_details = self.get_article_details([guide['id'] for guide in secondary_guides])
-            newsletter_content['secondary_destination_guides'] = [
-                {**dict(guide), **next((d for d in guide_details if d['id'] == guide['fetched_article_id']), {})}
-                for guide in secondary_guides
-            ]
+            newsletter_content['travel_news'] = []
         
         # 5. Practical travel tips (1-2 universal ones)
         tip_freshness = self.get_freshness_clause('tip')
@@ -355,14 +352,7 @@ class ArticleSelector:
             AND json_extract(content_type, '$[0]') = 'tip'
             AND id NOT IN ({placeholders})
             {tip_freshness}
-            AND json_extract(locations, '$.primary') = 'worldwide'
             ORDER BY 
-                CASE 
-                    WHEN json_extract(seasonality, '$.{current_season}') > 0 THEN 3
-                    WHEN json_extract(seasonality, '$.{next_season}') > 0 THEN 2
-                    WHEN json_extract(seasonality, '$.any') > 0 THEN 1
-                    ELSE 0
-                END DESC,
                 last_used IS NULL DESC,
                 COALESCE(used_count, 0) ASC
             LIMIT 2
@@ -379,69 +369,47 @@ class ArticleSelector:
         else:
             newsletter_content['practical_tips'] = []
         
-        # 6. Seasonal experience
-        experience_freshness = self.get_freshness_clause('experience')
-        placeholders = ','.join('?' * len(selected_article_ids)) if selected_article_ids else "0"
+        # 6. Occasional seasonal experience (only include in every 3rd newsletter)
+        # Check if this is the 3rd newsletter in the cycle based on week number
+        current_week = datetime.now().isocalendar()[1]
+        include_seasonal = (current_week % 3 == 0)
         
-        cursor = self.processed_db.conn.execute(f"""
-            SELECT * FROM processed_articles
-            WHERE json_array_length(content_type) > 0
-            AND json_extract(content_type, '$[0]') = 'experience'
-            AND id NOT IN ({placeholders})
-            {experience_freshness}
-            ORDER BY 
-                CASE 
-                    WHEN json_extract(seasonality, '$.{current_season}') > 0 THEN 3
-                    WHEN json_extract(seasonality, '$.{next_season}') > 0 THEN 2
-                    ELSE 1
-                END DESC,
-                last_used IS NULL DESC,
-                COALESCE(used_count, 0) ASC,
-                processed_date DESC
-            LIMIT 1
-        """, selected_article_ids)
-        seasonal_experience = cursor.fetchone()
+        if include_seasonal:
+            experience_freshness = self.get_freshness_clause('experience')
+            placeholders = ','.join('?' * len(selected_article_ids)) if selected_article_ids else "0"
+            
+            cursor = self.processed_db.conn.execute(f"""
+                SELECT * FROM processed_articles
+                WHERE json_array_length(content_type) > 0
+                AND json_extract(content_type, '$[0]') = 'experience'
+                AND id NOT IN ({placeholders})
+                {experience_freshness}
+                ORDER BY 
+                    CASE 
+                        WHEN json_extract(seasonality, '$.{current_season}') > 0 THEN 3
+                        WHEN json_extract(seasonality, '$.{next_season}') > 0 THEN 2
+                        ELSE 1
+                    END DESC,
+                    last_used IS NULL DESC,
+                    COALESCE(used_count, 0) ASC,
+                    processed_date DESC
+                LIMIT 1
+            """, selected_article_ids)
+            seasonal_experience = cursor.fetchone()
+            
+            if seasonal_experience:
+                exp_details = self.get_article_details([seasonal_experience['id']])[0]
+                newsletter_content['seasonal_experience'] = {**dict(seasonal_experience), **dict(exp_details)}
+                selected_article_ids.append(seasonal_experience['id'])
         
-        if seasonal_experience:
-            exp_details = self.get_article_details([seasonal_experience['id']])[0]
-            newsletter_content['seasonal_experience'] = {**dict(seasonal_experience), **dict(exp_details)}
-            selected_article_ids.append(seasonal_experience['id'])
-        
-        # 7. Travel news - relevant to either featured location or upcoming season
-        news_freshness = self.get_freshness_clause('news')
-        placeholders = ','.join('?' * len(selected_article_ids)) if selected_article_ids else "0"
-        
-        cursor = self.processed_db.conn.execute(f"""
-            SELECT * FROM processed_articles
-            WHERE json_array_length(content_type) > 0
-            AND json_extract(content_type, '$[0]') = 'news'
-            AND id NOT IN ({placeholders})
-            {news_freshness}
-            ORDER BY 
-                CASE
-                    WHEN json_extract(locations, '$.primary') = ? THEN 3
-                    WHEN json_extract(seasonality, '$.{current_season}') > 0 THEN 2
-                    WHEN json_extract(seasonality, '$.{next_season}') > 0 THEN 1
-                    ELSE 0
-                END DESC,
-                processed_date DESC,
-                last_used IS NULL DESC
-            LIMIT 1
-        """, selected_article_ids + [featured_location])
-        relevant_news = cursor.fetchone()
-        
-        if relevant_news:
-            news_details = self.get_article_details([relevant_news['id']])[0]
-            newsletter_content['travel_news'] = {**dict(relevant_news), **dict(news_details)}
-            selected_article_ids.append(relevant_news['id'])
-        
-        # 8. Add metadata to help with newsletter generation
+        # 7. Add metadata to help with newsletter generation
         newsletter_content['metadata'] = {
             'generation_date': datetime.now().isoformat(),
             'season': season_params['current_season'],
             'upcoming_season': season_params['next_season'],
             'destination_focus': featured_location if featured_location and featured_location.lower() != 'worldwide' else None,
-            'article_ids': selected_article_ids  # For tracking/updating later
+            'article_ids': selected_article_ids,  # For tracking/updating later
+            'include_seasonal': include_seasonal
         }
         
         return newsletter_content
