@@ -5,7 +5,7 @@ import markdown
 from datetime import datetime
 from typing import Dict, Any, List
 from database.processed_database import ProcessedDatabase
-from services.openai_client import OpenAIClient
+from services.openai.openai_client import OpenAIClient
 from config.logging_config import fetch_logger as logger
 
 class NewsletterWriter:
@@ -210,9 +210,10 @@ class NewsletterWriter:
         # Initialize the JSON structure
         json_data = {
             "header": {
-                "logo_url": os.getenv('BYTE_SIZE_LOGO'),
+                "logo_url": os.getenv('BYTE_SIZE_LOGO', "http://cdn.mcauto-images-production.sendgrid.net/7e69f08ffdf13ddf/1e75a737-1dea-469a-b3ce-b51d640c093e/500x500.jpg"),
                 "edition_title": edition_title,
-                "edition_tagline": edition_tagline
+                "edition_tagline": edition_tagline,
+                "edition_date": edition_date
             },
             "author": {
                 "name": "Johnathan Oneal",
@@ -249,7 +250,7 @@ class NewsletterWriter:
         # Add seasonal section if needed
         if include_seasonal:
             json_data["seasonal_inspiration"] = {
-                "title": "Seasonal Travel Ideas",
+                "title": "Spring Travel Inspiration",
                 "content": ""
             }
         
@@ -278,21 +279,23 @@ class NewsletterWriter:
             deal_sections = re.findall(r'## (.*?)$(.*?)(?=## |\Z)', deals_content, re.DOTALL | re.MULTILINE)
             
             for title, content in deal_sections:
-                json_data["featured_deals"].append({
+                deal = {
                     "title": title.strip(),
                     "content": self._convert_markdown_to_html(content.strip()),
                     "button_text": "Book Now!",
                     "button_url": "https://bytesizetravel.com/deals"
-                })
+                }
+                json_data["featured_deals"].append(deal)
             
             # If no deals were found with ## headings, use the whole section
             if not deal_sections:
-                json_data["featured_deals"].append({
+                deal = {
                     "title": "Special Travel Deal",
                     "content": self._convert_markdown_to_html(deals_content),
                     "button_text": "Book Now!",
                     "button_url": "https://bytesizetravel.com/deals"
-                })
+                }
+                json_data["featured_deals"].append(deal)
         
         if sections["destination_guides"]:
             guides_content = sections["destination_guides"].group(1).strip()
@@ -300,19 +303,21 @@ class NewsletterWriter:
             guide_sections = re.findall(r'## (.*?)$(.*?)(?=## |\Z)', guides_content, re.DOTALL | re.MULTILINE)
             
             for title, content in guide_sections:
-                json_data["destination_guides"].append({
+                guide = {
                     "title": title.strip(),
                     "content": self._convert_markdown_to_html(content.strip()),
                     "image_url": default_image_url  # Using placeholder until image system is implemented
-                })
+                }
+                json_data["destination_guides"].append(guide)
             
             # If no guides were found with ## headings, use the whole section
             if not guide_sections:
-                json_data["destination_guides"].append({
+                guide = {
                     "title": "Destination Guide",
                     "content": self._convert_markdown_to_html(guides_content),
                     "image_url": default_image_url  # Using placeholder until image system is implemented
-                })
+                }
+                json_data["destination_guides"].append(guide)
         
         # Process travel news (multiple items)
         if sections["travel_news"]:
@@ -321,17 +326,19 @@ class NewsletterWriter:
             news_sections = re.findall(r'## (.*?)$(.*?)(?=## |\Z)', news_content, re.DOTALL | re.MULTILINE)
             
             for title, content in news_sections:
-                json_data["travel_news"]["items"].append({
+                news_item = {
                     "title": title.strip(),
                     "content": self._convert_markdown_to_html(content.strip())
-                })
+                }
+                json_data["travel_news"]["items"].append(news_item)
             
             # If no news items were found with ## headings, use the whole section
             if not news_sections:
-                json_data["travel_news"]["items"].append({
+                news_item = {
                     "title": "Travel Industry Updates",
                     "content": self._convert_markdown_to_html(news_content)
-                })
+                }
+                json_data["travel_news"]["items"].append(news_item)
         
         if sections["travel_tips"]:
             tips_content = sections["travel_tips"].group(1).strip()

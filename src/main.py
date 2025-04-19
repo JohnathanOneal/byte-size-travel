@@ -11,6 +11,8 @@ from content.enriching.article_enricher import ArticleEnricher
 from content.selection.article_selector import ArticleSelector
 from content.writing.newsletter_writer import NewsletterWriter
 
+from services.amazon_ses.amazon_ses_client import AmazonSesClient
+
 from config.logging_config import app_logger as logger
 
 def load_environment():
@@ -29,8 +31,8 @@ def load_environment():
 
 
 def main():
-    # Load environment variables
-    load_environment()
+    # # Load environment variables
+    # load_environment()
 
     # # populate db with content from our sources
     # fetch_db = FetchDatabase("main")
@@ -52,22 +54,25 @@ def main():
     # logger.info(f"Processed {processed_count} new articles")
     
     # Select newsletter content using enriched metadata
-    # processed_db = ProcessedDatabase("main")
-    # selector = ArticleSelector(processed_db)
-    # try:
-    #     newsletter_content = selector.select_newsletter_content()
-    #     print("Newsletter content selected successfully")
-    # except ValueError as e:
-    #     print(f"Error selecting newsletter content: {str(e)}")
+    processed_db = ProcessedDatabase("main")
+    selector = ArticleSelector(processed_db)
+    try:
+        newsletter_content = selector.select_newsletter_content()
+        print("Newsletter content selected successfully")
+    except ValueError as e:
+        print(f"Error selecting newsletter content: {str(e)}")
 
-    # # Generate the newsletter
-    # newsletter_writer = NewsletterWriter(processed_db)
-    # sendgrid_json = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
-    # print(json.dumps(sendgrid_json, indent=2))
+    # Generate the newsletter
+    newsletter_writer = NewsletterWriter(processed_db)
+    json_data = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
 
-    # # Clean up
-    # processed_db.conn.close()
+    # Clean up
+    processed_db.conn.close()
+
+    ses_client = AmazonSesClient()
+    ses_client.send_templated_email('Newsletter-Edition-One', json_data)
 
 
 if __name__ == "__main__":
+
     main()
