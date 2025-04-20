@@ -16,6 +16,23 @@ class AmazonSesClient:
                                   aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"), 
                                   aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
                                   region_name=os.environ.get("AWS_REGION"))
+
+    def _verify_contact_list(self):
+        return self.client.get_contact_list(ContactListName=os.environ.get("SES_CONTACT_LIST_NAME"))
+
+    def create_contact_list(self):
+        response = self.client.create_contact_list(
+            ContactListName=os.environ.get("SES_CONTACT_LIST_NAME"),
+            Description='Subscribers for travel newsletter',
+            Topics=[{
+                'TopicName': 'newsletter',
+                'DisplayName': 'Travel Newsletter',
+                'Description': 'travel tips and deals',
+                'DefaultSubscriptionStatus': 'OPT_OUT'
+            }]
+        )
+
+        return self._verify_contact_list()
     
     def _load_html_template(self, template_path):
         """
