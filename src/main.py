@@ -68,10 +68,12 @@ def main():
 
     # # Clean up
     # processed_db.conn.close()
+    with open('../data/content_json/test/test_json_Data_20250422_161502.json', 'r') as file:
+        json_data = json.load(file)
 
-    # ses_client = AmazonSesClient()
-    # ses_client.send_templated_email('Newsletter-Edition-One', json_data)
-    pass
+    ses_client = AmazonSesClient()
+    ses_client.update_html_template('Newsletter-Edition-One', 'html_templates/template_one.html')
+    ses_client.send_templated_email(os.getenv('SES_CONTACT_LIST_NAME'), 'Newsletter-Edition-One', json_data)
 
 if __name__ == "__main__":
 
