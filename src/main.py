@@ -31,45 +31,46 @@ def load_environment():
 
 
 def main():
-    # # Load environment variables
-    # load_environment()
+    # Load environment variables
+    load_environment()
 
-    # # populate db with content from our sources
-    # fetch_db = FetchDatabase("main")
-    # populator = PopulateDB(fetch_db)
-    # populator.populate_all_sources()
+    # populate db with content from our sources
+    fetch_db = FetchDatabase("main")
+    populator = PopulateDB(fetch_db)
+    populator.populate_all_sources()
 
-    # # fetch full rss content
-    # fetcher = RssFullFetch(fetch_db)
-    # fetcher.fetch_pending_content()
-    # fetch_db.conn.close()
+    # fetch full rss content
+    fetcher = RssFullFetch(fetch_db)
+    fetcher.fetch_pending_content()
+    fetch_db.conn.close()
     
-    # # process data adding enriched metadata
-    # processed_db = ProcessedDatabase("main")
-    # enricher = ArticleEnricher(
-    #     processed_db=processed_db,
-    #     openai_model=os.getenv('OPENAI_MODEL')
-    # )
-    # processed_count = enricher.process_pending_articles()
-    # logger.info(f"Processed {processed_count} new articles")
+    # process data adding enriched metadata
+    processed_db = ProcessedDatabase("main")
+    enricher = ArticleEnricher(
+        processed_db=processed_db,
+        openai_model=os.getenv('OPENAI_MODEL')
+    )
+    processed_count = enricher.process_pending_articles()
+    logger.info(f"Processed {processed_count} new articles")
     
     # Select newsletter content using enriched metadata
-    # processed_db = ProcessedDatabase("main")
-    # selector = ArticleSelector(processed_db)
-    # try:
-    #     newsletter_content = selector.select_newsletter_content()
-    #     print("Newsletter content selected successfully")
-    # except ValueError as e:
-    #     print(f"Error selecting newsletter content: {str(e)}")
+    processed_db = ProcessedDatabase("main")
+    selector = ArticleSelector(processed_db)
+    try:
+        newsletter_content = selector.select_newsletter_content()
+        print("Newsletter content selected successfully")
+    except ValueError as e:
+        print(f"Error selecting newsletter content: {str(e)}")
 
-    # # Generate the newsletter
-    # newsletter_writer = NewsletterWriter(processed_db)
-    # json_data = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
+    # Generate the newsletter
+    newsletter_writer = NewsletterWriter(processed_db)
+    json_data = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
 
     # # Clean up
     # processed_db.conn.close()
-    with open('../data/content_json/test/test_json_Data_20250422_161502.json', 'r') as file:
-        json_data = json.load(file)
+
+    # with open('../data/content_json/test/test_json_Data_20250422_161502.json', 'r') as file:
+    #     json_data = json.load(file)
 
     ses_client = AmazonSesClient()
     ses_client.update_html_template('Newsletter-Edition-One', 'html_templates/template_one.html')

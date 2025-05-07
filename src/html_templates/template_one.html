@@ -30,7 +30,8 @@
             padding: 0;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f9f9f9;
         }
         
         * {
@@ -54,376 +55,473 @@
         }
         
         .wrapper {
-            background-color: #faedca;
+            background-color: #f0f7ff;
             width: 100%;
             table-layout: fixed;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
+            padding: 30px 0;
         }
         
         .main {
             background-color: #ffffff;
             margin: 0 auto;
             width: 100%;
-            max-width: 600px;
-            border: 3px solid #0c457d;
-            border-radius: 11px;
+            max-width: 620px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(12, 69, 125, 0.12);
+            overflow: hidden;
         }
         
         /* Typography */
         h1 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #2A2A2A;
-            padding: 2px 0;
-            line-height: 38px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #0c457d;
+            padding: 0;
+            line-height: 1.3;
             margin: 0;
+            letter-spacing: -0.5px;
         }
         
         h2 {
             font-size: 24px;
-            font-weight: normal;
+            font-weight: 600;
             color: #2A2A2A;
-            line-height: 32px;
-            padding-bottom: 4px;
-            padding-top: 16px;
+            line-height: 1.3;
+            padding: 0;
             margin: 0;
         }
         
         h3 {
             font-size: 20px;
-            font-weight: normal;
-            color: #2A2A2A;
-            line-height: 26px;
-            padding-bottom: 4px;
-            padding-top: 16px;
+            font-weight: 600;
+            color: #0c457d;
+            line-height: 1.3;
+            padding: 0;
             margin: 0;
         }
         
         p {
-            color: #2D2D2D;
+            color: #3a3a3a;
             font-size: 16px;
-            line-height: 24px;
-            padding-bottom: 8px;
-            padding-top: 8px;
-            margin: 0;
+            line-height: 1.6;
+            padding: 0;
+            margin: 12px 0;
         }
         
         a {
-            color: #0c457d;
+            color: #0c77d8;
             text-decoration: underline;
-            font-weight: bold;
+            font-weight: 500;
         }
         
         .button {
             background-color: #0c457d;
-            border-radius: 10px;
-            border: solid 2px #faedca;
+            border-radius: 8px;
             color: #ffffff;
             display: inline-block;
             font-size: 16px;
-            font-weight: normal;
-            line-height: 40px;
+            font-weight: 600;
+            line-height: 45px;
             text-align: center;
             text-decoration: none;
-            padding: 0 14px;
+            padding: 0 25px;
+            transition: all 0.3s;
             -webkit-text-size-adjust: none;
+            box-shadow: 0 2px 5px rgba(12, 69, 125, 0.2);
+        }
+        
+        .button:hover {
+            background-color: #0a3966;
         }
         
         .divider {
-            border-top: 3px solid #0c457d;
-            width: 70%;
-            margin: 25px auto;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(12,69,125,0.1) 0%, rgba(12,69,125,0.6) 50%, rgba(12,69,125,0.1) 100%);
+            width: 85%;
+            margin: 30px auto;
+            border: none;
         }
         
         .footer {
             background-color: #0c457d;
             color: #ffffff;
-            padding: 20px;
+            padding: 30px;
         }
         
         .footer p, .footer a {
             color: #ffffff;
-            font-size: 12px;
-            line-height: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .footer a {
+            text-decoration: underline;
+            color: #ffffff;
         }
         
         .social-bar {
-            background-color: #e8702a;
-            padding: 12px;
+            background: linear-gradient(90deg, #e8702a 0%, #f39c12 100%);
+            padding: 15px 0;
             text-align: center;
         }
         
         .social-icon {
             display: inline-block;
             margin: 0 8px;
-            width: 22px;
+            width: 28px;
+            transition: all 0.2s;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.15);
+        }
+        
+        /* Header styles */
+        .header-container {
+            background: linear-gradient(135deg, #0c457d 0%, #1a6baa 100%);
+            padding: 20px 0 0 0;
+            text-align: center;
+            border-bottom: 5px solid #e8702a;
+        }
+        
+        .logo-container {
+            margin: 0 auto 15px;
+        }
+        
+        .header-content {
+            background-color: #ffffff;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            padding: 30px 25px 10px;
         }
         
         /* Section styles */
         .section-title {
-            background-color: #0c457d;
+            background: linear-gradient(90deg, #0c457d 0%, #166bb1 100%);
             color: #ffffff;
-            padding: 10px 20px;
-            margin: 20px 0 15px 0;
+            padding: 12px 20px;
+            margin: 25px 0 20px 0;
             border-radius: 8px;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(12, 69, 125, 0.2);
         }
         
         .section-title h2 {
             color: #ffffff;
             padding: 0;
             margin: 0;
+            font-weight: 600;
         }
         
         .feature-card {
-            border: 2px solid #0c457d;
+            border: 1px solid rgba(12, 69, 125, 0.15);
             border-radius: 12px;
-            margin: 15px 0;
+            margin: 20px 0;
             overflow: hidden;
+            box-shadow: 0 3px 10px rgba(12, 69, 125, 0.08);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            box-shadow: 0 5px 15px rgba(12, 69, 125, 0.15);
+            transform: translateY(-2px);
         }
         
         .feature-card-header {
-            background-color: #faedca;
-            padding: 12px 20px;
-            border-bottom: 2px solid #0c457d;
-        }
-        
-        .feature-card-header h3 {
-            margin: 0;
-            padding: 0;
-            color: #0c457d;
+            background: linear-gradient(90deg, #faedca 0%, #fff2d1 100%);
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(12, 69, 125, 0.15);
         }
         
         .feature-card-content {
-            padding: 15px 20px;
+            padding: 20px;
         }
         
         /* Content padding */
         .content-padding {
-            padding: 0 20px;
+            padding: 0 30px;
+        }
+        
+        /* Author bar */
+        .author-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            border-radius: 50%;
+            border: 3px solid #0c457d;
+            box-shadow: 0 2px 6px rgba(12, 69, 125, 0.2);
+        }
+        
+        .author-info {
+            padding-left: 15px;
+        }
+        
+        .edition-date {
+            background-color: #e8702a;
+            color: #ffffff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        /* Price tag */
+        .price-tag {
+            background-color: #0c457d;
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 10px;
         }
         
         /* Mobile styles */
-        @media screen and (max-width: 600px) {
+        @media screen and (max-width: 620px) {
             .main {
-                width: 100% !important;
-                max-width: 100% !important;
+                width: 95% !important;
+                max-width: 95% !important;
             }
             
             .content-padding {
-                padding: 0 10px !important;
+                padding: 0 15px !important;
             }
             
             h1 {
-                font-size: 24px !important;
-                line-height: 30px !important;
+                font-size: 26px !important;
+                line-height: 1.3 !important;
+            }
+            
+            h2 {
+                font-size: 22px !important;
+            }
+            
+            h3 {
+                font-size: 18px !important;
             }
             
             .divider {
                 width: 90% !important;
+                margin: 25px auto !important;
+            }
+            
+            .button {
+                display: block !important;
+                width: 100% !important;
+                padding: 0 !important;
+                text-align: center !important;
+            }
+            
+            .feature-card {
+                margin: 15px 0 !important;
             }
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+        <!-- Main container -->
+        <table class="main" width="620" cellspacing="0" cellpadding="0" border="0" align="center">
             <tr>
-                <td style="padding: 10px;">
-                    <!-- Main container -->
-                    <table class="main" width="600" cellspacing="0" cellpadding="0" border="0" align="center">
+                <td style="padding: 0;">
+                    <!-- Header Section -->
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="header-container">
                         <tr>
-                            <td style="padding: 20px 0 0 0;">
+                            <td align="center" style="padding: 0;">
                                 <!-- Logo -->
-                                <table cellpadding="0" cellspacing="0" border="0" align="center">
-                                  <tr>
-                                    <td style="line-height: 0; font-size: 0;">
-                                      <div style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid #000000; overflow: hidden;">
-                                        <img src="{{header.logo_url}}"
-                                             alt="ByteSize Logo" 
-                                             width="150" 
-                                             style="display: block;">
-                                      </div>
-                                    </td>
-                                  </tr>
+                                <table cellpadding="0" cellspacing="0" border="0" align="center" class="logo-container">
+                                    <tr>
+                                        <td style="line-height: 0; font-size: 0; padding: 0;">
+                                            <div style="width: 120px; height: 120px; background-color: #ffffff; border-radius: 50%; border: 4px solid #e8702a; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                                                <img src="{{header.logo_url}}"
+                                                     alt="ByteSize Logo" 
+                                                     width="120" 
+                                                     style="display: block;">
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </table>
-                                
-                                <!-- Header -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="header-content">
+                                <!-- Title and Tagline -->
                                 <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                     <tr>
-                                        <td align="center" style="padding: 15px 20px;">
-                                            <h1 style="text-align: center;">{{header.edition_title}}</h1>
-                                            <p style="text-align: center; font-size: 20px; color: #3E3E3E;">{{header.edition_tagline}}</p>
+                                        <td align="center" style="padding: 0 0 15px 0;">
+                                            <h1>{{header.edition_title}}</h1>
+                                            <p style="font-size: 18px; color: #555555; margin-top: 5px;">{{header.edition_tagline}}</p>
+                                            <div class="edition-date">{{header.edition_date}}</div>
                                         </td>
                                     </tr>
                                 </table>
-                                
-                                <!-- Author Bar -->
-                                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding: 0 20px 20px;">
-                                    <tr>
-                                        <td>
-                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                <tr>
-                                                    <td width="50%" style="vertical-align: middle;">
-                                                        <table cellspacing="0" cellpadding="0" border="0">
-                                                            <tr>
-                                                                <td width="60" style="vertical-align: middle;">
-                                                                    <img src="{{author.avatar_url}}" width="60" alt="Author Avatar" style="border-radius: 50%; border: 2px solid #0c457d;">
-                                                                </td>
-                                                                <td style="padding-left: 10px; vertical-align: middle;">
-                                                                    <p style="padding: 0; margin: 0; font-size: 14px; line-height: 1.4;">
-                                                                        <span style="color: #2D2D2D; font-weight: bold;">{{author.name}}</span><br>
-                                                                        <span style="color: #808080;">{{author.date}}</span>
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td width="50%" align="right">
-                                                        <p style="text-align: right; font-size: 14px; color: #808080;">{{header.edition_date}}</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                                
-                                <!-- Content -->
-                                <div class="content-padding">
-                                    
-                                    <!-- Introduction Section -->
-                                    <div>
-                                        {{{introduction.content}}}
-                                    </div>
-                                    
-                                    <div class="divider"></div>
-                                    
-                                    <!-- Featured Deals Section -->
-                                    <div class="section-title">
-                                        <h2>Featured Deals</h2>
-                                    </div>
-                                    
-                                    <!-- Multiple Featured Deals -->
-                                    {{#each featured_deals}}
-                                    <div class="feature-card">
-                                        <div class="feature-card-header">
-                                            <h3>{{title}}</h3>
-                                        </div>
-                                        <div class="feature-card-content">
-                                            {{{content}}}
-                                            
-                                            <!-- Deal Button -->
-                                            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 15px 0 5px;">
-                                                <tr>
-                                                    <td align="center">
-                                                        <a href="{{button_url}}" class="button" style="color: #ffffff;">{{button_text}}</a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                    
-                                    <div class="divider"></div>
-                                    
-                                    <!-- Destination Guides Section -->
-                                    <div class="section-title">
-                                        <h2>Destination Guides</h2>
-                                    </div>
-                                    
-                                    <!-- Destination Guide Cards -->
-                                    {{#each destination_guides}}
-                                    <div class="feature-card">
-                                        <div class="feature-card-header">
-                                            <h3>{{title}}</h3>
-                                        </div>
-                                        <div class="feature-card-content">
-                                            {{{content}}}
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                    
-                                    <div class="divider"></div>
-                                    
-                                    <!-- Travel News Section -->
-                                    <div class="section-title">
-                                        <h2>{{travel_news.title}}</h2>
-                                    </div>
-                                    
-                                    <!-- Travel News Items -->
-                                    {{#each travel_news.items}}
-                                    <div class="feature-card">
-                                        <div class="feature-card-header">
-                                            <h3>{{title}}</h3>
-                                        </div>
-                                        <div class="feature-card-content">
-                                            {{{content}}}
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                    
-                                    <div class="divider"></div>
-                                    
-                                    <!-- Travel Tips Section -->
-                                    <div class="section-title">
-                                        <h2>{{travel_tips.title}}</h2>
-                                    </div>
-                                    
-                                    <div>
-                                        {{{travel_tips.content}}}
-                                    </div>
-                                    
-                                    {{#if seasonal_inspiration}}
-                                    <div class="divider"></div>
-                                    
-                                    <!-- Seasonal Inspiration Section (Conditional) -->
-                                    <div class="section-title">
-                                        <h2>{{seasonal_inspiration.title}}</h2>
-                                    </div>
-                                    
-                                    <div>
-                                        {{{seasonal_inspiration.content}}}
-                                    </div>
-                                    {{/if}}
-                                    
-                                    <div class="divider"></div>
-                                    
-                                    <!-- Conclusion Section -->
-                                    <div>
-                                        {{{conclusion.content}}}
-                                    </div>
-                                    
-                                    <!-- Button -->
-                                    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 20px 0;">
-                                        <tr>
-                                            <td align="center">
-                                                <a href="{{conclusion.button_url}}" class="button" style="color: #ffffff;">{{conclusion.button_text}}</a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                
-                                <!-- Footer - Full Width, No Gap -->
+
+                                <!-- Author Section -->
                                 <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
                                     <tr>
-                                        <td style="padding: 0;">
-                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                <tr>
-                                                    <td class="social-bar" style="padding: 12px 0; text-align: center;">
-                                                        <a href="{{footer.social_links.facebook}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/facebook.png" alt="Facebook" width="22"></a>
-                                                        <a href="{{footer.social_links.twitter}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/twitter.png" alt="Twitter" width="22"></a>
-                                                        <a href="{{footer.social_links.instagram}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/instagram.png" alt="Instagram" width="22"></a>
-                                                        <a href="{{footer.social_links.linkedin}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/linkedin.png" alt="LinkedIn" width="22"></a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="footer" style="border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; padding: 20px 0; text-align: center;">
-                                                        <p style="text-align: center; margin-bottom: 10px; color: #ffffff;">Update your email preferences or <a href="{{amazonSESUnsubscribeUrl}}" style="color: #ffffff;">unsubscribe here</a></p>
-                                                        <p style="text-align: center; margin-bottom: 0; color: #ffffff;">© 2025 ByteSize Travel Deals</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                        <td>
+                                            <div class="author-container">
+                                                <img src="{{author.avatar_url}}" width="60" height="60" alt="Author Avatar" class="author-avatar">
+                                                <div class="author-info">
+                                                    <p style="font-weight: 700; font-size: 16px; margin: 0; padding: 0;">{{author.name}}</p>
+                                                    <p style="color: #666666; font-size: 14px; margin: 2px 0 0 0; padding: 0;">{{author.date}}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <!-- Content -->
+                    <div class="content-padding">
+                        
+                        <!-- Introduction Section -->
+                        <div style="margin-top: 20px;">
+                            {{{introduction.content}}}
+                        </div>
+                        
+                        <hr class="divider">
+                        
+                        <!-- Featured Deals Section -->
+                        <div class="section-title">
+                            <h2>Featured Deals</h2>
+                        </div>
+                        
+                        <!-- Multiple Featured Deals -->
+                        {{#each featured_deals}}
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <h3>{{title}}</h3>
+                            </div>
+                            <div class="feature-card-content">
+                                {{{content}}}
+                                
+                                <!-- Price Tag (if available) -->
+                                {{#if price}}
+                                <div class="price-tag">{{price}}</div>
+                                {{/if}}
+                                
+                                <!-- Deal Button -->
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 20px 0 5px;">
+                                    <tr>
+                                        <td align="center">
+                                            <a href="{{button_url}}" class="button">{{button_text}}</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        {{/each}}
+                        
+                        <hr class="divider">
+                        
+                        <!-- Destination Guides Section -->
+                        <div class="section-title">
+                            <h2>Destination Guides</h2>
+                        </div>
+                        
+                        <!-- Destination Guide Cards -->
+                        {{#each destination_guides}}
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <h3>{{title}}</h3>
+                            </div>
+                            <div class="feature-card-content">
+                                {{{content}}}
+                            </div>
+                        </div>
+                        {{/each}}
+                        
+                        <hr class="divider">
+                        
+                        <!-- Travel News Section -->
+                        <div class="section-title">
+                            <h2>{{travel_news.title}}</h2>
+                        </div>
+                        
+                        <!-- Travel News Items -->
+                        {{#each travel_news.items}}
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <h3>{{title}}</h3>
+                            </div>
+                            <div class="feature-card-content">
+                                {{{content}}}
+                            </div>
+                        </div>
+                        {{/each}}
+                        
+                        <hr class="divider">
+                        
+                        <!-- Travel Tips Section -->
+                        <div class="section-title">
+                            <h2>{{travel_tips.title}}</h2>
+                        </div>
+                        
+                        <div style="padding: 5px 0 15px;">
+                            {{{travel_tips.content}}}
+                        </div>
+                        
+                        {{#if seasonal_inspiration}}
+                        <hr class="divider">
+                        
+                        <!-- Seasonal Inspiration Section (Conditional) -->
+                        <div class="section-title">
+                            <h2>{{seasonal_inspiration.title}}</h2>
+                        </div>
+                        
+                        <div style="padding: 5px 0 15px;">
+                            {{{seasonal_inspiration.content}}}
+                        </div>
+                        {{/if}}
+                        
+                        <hr class="divider">
+                        
+                        <!-- Conclusion Section -->
+                        <div style="padding: 5px 0 15px;">
+                            {{{conclusion.content}}}
+                        </div>
+                        
+                        <!-- Button -->
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 25px 0 35px;">
+                            <tr>
+                                <td align="center">
+                                    <a href="{{conclusion.button_url}}" class="button">{{conclusion.button_text}}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- Footer - Full Width, No Gap -->
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
+                        <tr>
+                            <td style="padding: 0;">
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tr>
+                                        <td class="social-bar" style="padding: 15px 0; text-align: center;">
+                                            <a href="{{footer.social_links.facebook}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/facebook.png" alt="Facebook" width="28"></a>
+                                            <a href="{{footer.social_links.twitter}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/twitter.png" alt="Twitter" width="28"></a>
+                                            <a href="{{footer.social_links.instagram}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/instagram.png" alt="Instagram" width="28"></a>
+                                            <a href="{{footer.social_links.linkedin}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/linkedin.png" alt="LinkedIn" width="28"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer" style="padding: 30px 25px; text-align: center;">
+                                            <p style="text-align: center; margin-bottom: 15px; color: #ffffff; font-size: 15px;">Update your email preferences or <a href="{{amazonSESUnsubscribeUrl}}" style="color: #ffffff; text-decoration: underline;">unsubscribe here</a></p>
+                                            <p style="text-align: center; margin-bottom: 0; color: #ffffff; font-size: 14px;">© 2025 ByteSize Travel Deals</p>
                                         </td>
                                     </tr>
                                 </table>

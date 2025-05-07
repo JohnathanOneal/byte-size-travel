@@ -30,7 +30,7 @@
             padding: 0;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
-            font-family: 'Open Sans', Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
         }
         
         * {
@@ -68,67 +68,36 @@
             max-width: 600px;
             border: 3px solid #0c457d;
             border-radius: 11px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
         
         /* Typography */
-        h1, h2, h3, h4, h5, h6, p {
-            margin: 0;
-            padding: 0;
-            line-height: 1.4;
-        }
-        
         h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
             color: #2A2A2A;
             padding: 2px 0;
             line-height: 38px;
+            margin: 0;
         }
         
         h2 {
             font-size: 24px;
             font-weight: normal;
             color: #2A2A2A;
-            line-height: 36px;
+            line-height: 32px;
             padding-bottom: 4px;
             padding-top: 16px;
+            margin: 0;
         }
         
         h3 {
             font-size: 20px;
             font-weight: normal;
             color: #2A2A2A;
-            line-height: 30px;
+            line-height: 26px;
             padding-bottom: 4px;
             padding-top: 16px;
-        }
-        
-        h4 {
-            font-size: 18px;
-            font-weight: normal;
-            color: #2A2A2A;
-            line-height: 27px;
-            padding-bottom: 4px;
-            padding-top: 16px;
-        }
-        
-        h5 {
-            font-size: 16px;
-            font-weight: normal;
-            color: #2A2A2A;
-            line-height: 24px;
-            padding-bottom: 4px;
-            padding-top: 16px;
-        }
-        
-        h6 {
-            font-size: 14px;
-            font-weight: normal;
-            color: #2A2A2A;
-            line-height: 21px;
-            padding-bottom: 4px;
-            padding-top: 16px;
+            margin: 0;
         }
         
         p {
@@ -137,35 +106,28 @@
             line-height: 24px;
             padding-bottom: 8px;
             padding-top: 8px;
+            margin: 0;
         }
         
         a {
-            color: #0c457d !important;
+            color: #0c457d;
             text-decoration: underline;
             font-weight: bold;
-            font-style: italic;
         }
         
         .button {
             background-color: #0c457d;
             border-radius: 10px;
-            border: solid 3px #faedca;
-            color: #ffffff !important;
+            border: solid 2px #faedca;
+            color: #ffffff;
             display: inline-block;
             font-size: 16px;
             font-weight: normal;
-            line-height: 42px;
+            line-height: 40px;
             text-align: center;
             text-decoration: none;
             padding: 0 14px;
             -webkit-text-size-adjust: none;
-        }
-        
-        .button a {
-            color: #ffffff !important;
-            font-weight: normal !important;
-            font-style: normal !important;
-            text-decoration: none !important;
         }
         
         .divider {
@@ -176,15 +138,12 @@
         
         .footer {
             background-color: #0c457d;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
             color: #ffffff;
             padding: 20px;
-            margin-bottom: 0;
         }
         
         .footer p, .footer a {
-            color: #ffffff !important;
+            color: #ffffff;
             font-size: 12px;
             line-height: 18px;
         }
@@ -240,6 +199,11 @@
             padding: 15px 20px;
         }
         
+        /* Content padding */
+        .content-padding {
+            padding: 0 20px;
+        }
+        
         /* Mobile styles */
         @media screen and (max-width: 600px) {
             .main {
@@ -251,45 +215,19 @@
                 padding: 0 10px !important;
             }
             
-            .mobile-full-width {
-                width: 100% !important;
-            }
-            
-            .mobile-center {
-                text-align: center !important;
-            }
-            
-            .mobile-stack {
-                display: block !important;
-                width: 100% !important;
+            h1 {
+                font-size: 24px !important;
+                line-height: 30px !important;
             }
             
             .divider {
                 width: 90% !important;
             }
-            
-            h1 {
-                font-size: 28px !important;
-                line-height: 32px !important;
-            }
-            
-            .hero-image {
-                height: auto !important;
-                max-width: 100% !important;
-            }
-            
-            .social-bar {
-                text-align: center !important;
-            }
-            
-            .social-icon {
-                margin: 0 4px !important;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper" style="background-color: #faedca;">
+    <div class="wrapper">
         <table width="100%" cellspacing="0" cellpadding="0" border="0">
             <tr>
                 <td style="padding: 10px;">
@@ -301,10 +239,10 @@
                                 <table cellpadding="0" cellspacing="0" border="0" align="center">
                                   <tr>
                                     <td style="line-height: 0; font-size: 0;">
-                                      <div style="width: 157px; height: 157px; border-radius: 50%; border: 3px solid #000000; overflow: hidden;">
+                                      <div style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid #000000; overflow: hidden;">
                                         <img src="{{header.logo_url}}"
                                              alt="ByteSize Logo" 
-                                             width="157" 
+                                             width="150" 
                                              style="display: block;">
                                       </div>
                                     </td>
@@ -330,20 +268,20 @@
                                                     <td width="50%" style="vertical-align: middle;">
                                                         <table cellspacing="0" cellpadding="0" border="0">
                                                             <tr>
-                                                                <td width="40" style="vertical-align: middle;">
-                                                                    <img src="{{author.avatar_url}}" width="40" alt="Author Avatar" style="border-radius: 50%; border: 4px solid transparent;">
+                                                                <td width="60" style="vertical-align: middle;">
+                                                                    <img src="{{author.avatar_url}}" width="60" alt="Author Avatar" style="border-radius: 50%; border: 2px solid #0c457d;">
                                                                 </td>
                                                                 <td style="padding-left: 10px; vertical-align: middle;">
                                                                     <p style="padding: 0; margin: 0; font-size: 14px; line-height: 1.4;">
                                                                         <span style="color: #2D2D2D; font-weight: bold;">{{author.name}}</span><br>
-                                                                        <span style="color: #c0c0c0;">{{author.date}}</span>
+                                                                        <span style="color: #808080;">{{author.date}}</span>
                                                                     </p>
                                                                 </td>
                                                             </tr>
                                                         </table>
                                                     </td>
                                                     <td width="50%" align="right">
-                                                        <p style="text-align: right; font-size: 14px; color: #999;">{{header.edition_date}}</p>
+                                                        <p style="text-align: right; font-size: 14px; color: #808080;">{{header.edition_date}}</p>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -352,10 +290,10 @@
                                 </table>
                                 
                                 <!-- Content -->
-                                <div class="content-padding" style="padding: 0 20px;">
+                                <div class="content-padding">
                                     
                                     <!-- Introduction Section -->
-                                    <div class="introduction-section">
+                                    <div>
                                         {{{introduction.content}}}
                                     </div>
                                     
@@ -379,7 +317,7 @@
                                             <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 15px 0 5px;">
                                                 <tr>
                                                     <td align="center">
-                                                        <a href="https://bytesizetravel.com/deals" class="button">{{button_text}}</a>
+                                                        <a href="{{button_url}}" class="button" style="color: #ffffff;">{{button_text}}</a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -432,7 +370,7 @@
                                         <h2>{{travel_tips.title}}</h2>
                                     </div>
                                     
-                                    <div class="travel-tips-content">
+                                    <div>
                                         {{{travel_tips.content}}}
                                     </div>
                                     
@@ -444,7 +382,7 @@
                                         <h2>{{seasonal_inspiration.title}}</h2>
                                     </div>
                                     
-                                    <div class="seasonal-content">
+                                    <div>
                                         {{{seasonal_inspiration.content}}}
                                     </div>
                                     {{/if}}
@@ -452,7 +390,7 @@
                                     <div class="divider"></div>
                                     
                                     <!-- Conclusion Section -->
-                                    <div class="conclusion-section">
+                                    <div>
                                         {{{conclusion.content}}}
                                     </div>
                                     
@@ -460,19 +398,19 @@
                                     <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 20px 0;">
                                         <tr>
                                             <td align="center">
-                                                <a href="https://bytesizetravel.com/explore" class="button">{{conclusion.button_text}}</a>
+                                                <a href="{{conclusion.button_url}}" class="button" style="color: #ffffff;">{{conclusion.button_text}}</a>
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
                                 
                                 <!-- Footer - Full Width, No Gap -->
-                                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: -3px; margin-top: 20px;">
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
                                     <tr>
                                         <td style="padding: 0;">
                                             <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                                 <tr>
-                                                    <td class="social-bar" style="padding: 12px 0;">
+                                                    <td class="social-bar" style="padding: 12px 0; text-align: center;">
                                                         <a href="{{footer.social_links.facebook}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/facebook.png" alt="Facebook" width="22"></a>
                                                         <a href="{{footer.social_links.twitter}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/twitter.png" alt="Twitter" width="22"></a>
                                                         <a href="{{footer.social_links.instagram}}" class="social-icon"><img src="https://cdn.tools.unlayer.com/social/icons/circle/instagram.png" alt="Instagram" width="22"></a>
@@ -480,9 +418,9 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="footer" style="border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; padding: 20px 0;">
-                                                        <p style="text-align: center; margin-bottom: 10px;">Update your email preferences or <a href="{{footer.unsubscribe_url}}" style="color: #ffffff !important;">unsubscribe here</a></p>
-                                                        <p style="text-align: center; margin-bottom: 0;">© 2025 ByteSize Travel Deals</p>
+                                                    <td class="footer" style="border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; padding: 20px 0; text-align: center;">
+                                                        <p style="text-align: center; margin-bottom: 10px; color: #ffffff;">Update your email preferences or <a href="{{amazonSESUnsubscribeUrl}}" style="color: #ffffff;">unsubscribe here</a></p>
+                                                        <p style="text-align: center; margin-bottom: 0; color: #ffffff;">© 2025 ByteSize Travel Deals</p>
                                                     </td>
                                                 </tr>
                                             </table>
