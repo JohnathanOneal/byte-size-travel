@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import re
 import markdown
 from datetime import datetime
@@ -161,7 +162,7 @@ class NewsletterWriter:
             markdown_newsletter = self.llm.analyze(system_prompt, content)
             
             # Parse the markdown into structured JSON for SendGrid
-            sendgrid_data = self._markdown_to_sendgrid_json(
+            newsletter_json = self._markdown_to_sendgrid_json(
                 markdown_newsletter, 
                 edition_title.title(), 
                 edition_tagline, 
@@ -173,10 +174,22 @@ class NewsletterWriter:
             if mode.lower() == "real" and 'metadata' in newsletter_content and 'article_ids' in newsletter_content['metadata']:
                 self.update_usage_statistics(newsletter_content['metadata']['article_ids'])
                 logger.info("Updated usage statistics in real mode")
+                json_dir = os.getenv("REAL_JSON_DIR")
+                prefix = "real"
             elif mode.lower() == "test":
                 logger.info("Test mode: usage statistics not updated")
-            
-            return sendgrid_data
+                json_dir = os.getenv("TEST_JSON_DIR")
+                prefix = "test"
+
+            # Save to disc for backup
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"{prefix}_json_Data_{timestamp}.json"
+            filepath = os.path.join(json_dir, filename)
+            with open(filepath, 'w') as f:
+                json.dump(newsletter_json, f, indent=4)
+            logger.info(f"Saved JSON data to {filepath}")
+                        
+            return newsletter_json
             
         except Exception as e:
             logger.error(f"Error generating newsletter: {str(e)}")
