@@ -3,9 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Travel Newsletter Signup</title>
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="form-container">
+        <h2>Subscribe to our Travel Newsletter</h2>
+        <p>Get the latest travel deals and tips delivered to your inbox.</p>
+        
+        <form id="newsletter-form">
+            <input type="email" id="email" placeholder="Your email address" required>
+            <button type="submit">Subscribe</button>
+        </form>
+        
+        <div id="success-message" class="message success">
+            Thanks! Please check your email to confirm your subscription.
+        </div>
+        
+        <div id="error-message" class="message error">
+            Sorry, something went wrong. Please try again.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Hide any previous messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            try {
+                const apiUrl = 'https://jsdaupld66.execute-api.us-east-1.amazonaws.com/prod/subscribe';
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    document.getElementById('email').value = '';
+                } else {
+                    errorMessage.textContent = data.message || 'Something went wrong. Please try again.';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Could not connect to our server. Please try again later.';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
