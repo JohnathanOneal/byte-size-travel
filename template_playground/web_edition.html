@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteSize Travel Deals</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="newsletter-header">
+            <div class="logo-container">
+                <img src="{{header.logo_url}}" alt="ByteSize Logo" width="120">
+            </div>
+            
+            <h1>{{header.edition_title}}</h1>
+            <p>{{header.edition_tagline}}</p>
+            <div class="issue-number">{{header.edition_date}}</div>
+            
+            <!-- Author Section -->
+            <div class="newsletter-item author-box">
+                <img src="{{author.avatar_url}}" width="60" height="60" alt="Author Avatar" class="author-avatar">
+                <div>
+                    <p><strong>{{author.name}}</strong></p>
+                    <p class="issue-date">{{author.date}}</p>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Content -->
+        <main>
+            <!-- Introduction Section -->
+            <section class="text-left">
+                {{{introduction.content}}}
+            </section>
+            
+            <!-- Featured Deals Section -->
+            <section class="text-left">
+                <h2 class="section-heading">Featured Deals</h2>
+                
+                <!-- Multiple Featured Deals -->
+                {{#each featured_deals}}
+                <div class="newsletter-item">
+                    <h3>{{title}}</h3>
+                    <div>
+                        {{{content}}}
+                        
+                        <!-- Price Tag (if available) -->
+                        {{#if price}}
+                        <span class="issue-number">{{price}}</span>
+                        {{/if}}
+                        
+                        <!-- Deal Button -->
+                        <div class="text-center">
+                            <a href="{{button_url}}" class="button">{{button_text}}</a>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </section>
+            
+            <!-- Destination Guides Section -->
+            <section class="text-left">
+                <h2 class="section-heading">Destination Guides</h2>
+                
+                <!-- Destination Guide Cards -->
+                {{#each destination_guides}}
+                <div class="newsletter-item">
+                    <h3>{{title}}</h3>
+                    <div>
+                        {{{content}}}
+                    </div>
+                </div>
+                {{/each}}
+            </section>
+            
+            <!-- Travel News Section -->
+            <section class="text-left">
+                <h2 class="section-heading">{{travel_news.title}}</h2>
+                
+                <!-- Travel News Items -->
+                {{#each travel_news.items}}
+                <div class="newsletter-item">
+                    <h3>{{title}}</h3>
+                    <div>
+                        {{{content}}}
+                    </div>
+                </div>
+                {{/each}}
+            </section>
+            
+            <!-- Travel Tips Section -->
+            <section class="text-left">
+                <h2 class="section-heading">{{travel_tips.title}}</h2>
+                <div>
+                    {{{travel_tips.content}}}
+                </div>
+            </section>
+            
+            {{#if seasonal_inspiration}}
+            <!-- Seasonal Inspiration Section (Conditional) -->
+            <section class="text-left">
+                <h2 class="section-heading">{{seasonal_inspiration.title}}</h2>
+                <div>
+                    {{{seasonal_inspiration.content}}}
+                </div>
+            </section>
+            {{/if}}
+            
+            <!-- Conclusion Section -->
+            <section class="text-left">
+                <div>
+                    {{{conclusion.content}}}
+                </div>
+                
+                <!-- Button -->
+                <div class="text-center">
+                    <a href="{{conclusion.button_url}}" class="button">{{conclusion.button_text}}</a>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="nav-links">
+                <a href="{{footer.social_links.facebook}}">Facebook</a>
+                <a href="{{footer.social_links.twitter}}">Twitter</a>
+                <a href="{{footer.social_links.instagram}}">Instagram</a>
+                <a href="{{footer.social_links.linkedin}}">LinkedIn</a>
+            </div>
+            
+            <p>Update your email preferences or <a href="{{amazonSESUnsubscribeUrl}}">unsubscribe here</a></p>
+            <p>© 2025 ByteSize Travel Deals</p>
+            
+            <div class="text-center">
+                <a href="../../newsletters.html" class="button">Back to Archive</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
