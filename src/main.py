@@ -56,25 +56,18 @@ def main():
     # Select newsletter content using enriched metadata
     processed_db = ProcessedDatabase("main")
     selector = ArticleSelector(processed_db)
-    try:
-        newsletter_content = selector.select_newsletter_content()
-        print("Newsletter content selected successfully")
-    except ValueError as e:
-        print(f"Error selecting newsletter content: {str(e)}")
+    newsletter_content = selector.select_newsletter_content()
 
     # Generate the newsletter
     newsletter_writer = NewsletterWriter(processed_db)
     json_data = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
 
-    # # Clean up
-    # processed_db.conn.close()
-
-    # with open('../data/content_json/test/test_json_Data_20250422_161502.json', 'r') as file:
-    #     json_data = json.load(file)
+    # Clean up
+    processed_db.conn.close()
 
     ses_client = AmazonSesClient()
-    ses_client.update_html_template('Newsletter-Edition-One', 'html_templates/template_one.html')
-    ses_client.send_templated_email(os.getenv('SES_CONTACT_LIST_NAME'), 'Newsletter-Edition-One', json_data)
+    ses_client.update_html_template(os.getenv("SES_NEWSLETTER_EDITION_ONE"), os.getenv("EMAIL_TEMPLATE_ONE_FILE"))
+    ses_client.send_templated_email(os.getenv('SES_CONTACT_LIST_NAME'), os.getenv("SES_NEWSLETTER_EDITION_ONE"), json_data)
 
 if __name__ == "__main__":
 
