@@ -168,3 +168,15 @@ data/
 .idea/
 .vscode/
 config/sources.yaml
+
+
+# node
+# Node.js
+node_modules/
+tools/node_modules/
+package-lock.json
+tools/package-lock.json
+
+# VSCode
+.vscode/
+.DS_Store

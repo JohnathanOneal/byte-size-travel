@@ -32,7 +32,6 @@ class NewsletterWriter:
             edition_title = "Travel Deals Weekly"
             edition_tagline = "Explore the world for less"
         
-        # Update system prompt based on the new structure
         system_prompt = """
         You are an expert travel newsletter writer for "ByteSize Travel Deals." Your task is to create an engaging tri-weekly newsletter highlighting the best travel deals, destination guides, and travel news. I'll provide you with selected travel content including deals, guides, tips, and news articles.
 
@@ -188,6 +187,11 @@ class NewsletterWriter:
             with open(filepath, 'w') as f:
                 json.dump(newsletter_json, f, indent=4)
             logger.info(f"Saved JSON data to {filepath}")
+
+            if mode.lower == "real":
+                with open(os.getenv("UNPROCESSED_TEXT_FILE"), 'a') as file_list:
+                    file_list.write(f"{filepath}\n")
+                logger.info(f"Added {filepath} to newsletter files list")
                         
             return newsletter_json
             
