@@ -7,7 +7,7 @@ let allNewsletters = [];
 let displayedNewsletters = [];
 
 function loadNewsletters() {
-    fetch('newsletters.json') // no "../" if newsletters.json is in the root next to newsletters.html
+    fetch('/newsletters.json')
         .then(response => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return response.json();
