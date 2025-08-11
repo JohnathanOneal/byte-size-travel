@@ -1029,7 +1029,6 @@ footer {
     66% { content: '...'; }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .archive-hero h1 {
         font-size: 28px;
