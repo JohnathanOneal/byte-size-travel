@@ -3,34 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Newsletter Signup</title>
     <link rel="stylesheet" href="css/style.css">
+    <title>ByteTrip - Pixel Perfect Travel Newsletter</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Animated stars background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Floating emoji particles - travel themed -->
+    <div class="emoji-container">
+        <span class="floating-emoji" style="left: 10%; animation-delay: 0s;">🏝️</span>
+        <span class="floating-emoji" style="left: 25%; animation-delay: 2s;">✈️</span>
+        <span class="floating-emoji" style="left: 40%; animation-delay: 4s;">🌴</span>
+        <span class="floating-emoji" style="left: 55%; animation-delay: 1s;">🎒</span>
+        <span class="floating-emoji" style="left: 70%; animation-delay: 3s;">🗺️</span>
+        <span class="floating-emoji" style="left: 85%; animation-delay: 5s;">🏖️</span>
+        <span class="floating-emoji" style="left: 15%; animation-delay: 6s;">💰</span>
+        <span class="floating-emoji" style="left: 50%; animation-delay: 7s;">🌍</span>
+        <span class="floating-emoji" style="left: 75%; animation-delay: 8s;">📧</span>
+    </div>
+    
     <div class="container">
-        <h2>Subscribe to our Travel Newsletter</h2>
-        <p>Get the latest travel deals and tips delivered to your inbox.</p>
+        <header>
+            <h1 class="logo">BYTE SIZE</h1>
+            <p class="subtitle-logo">TRAVEL DEALS</p>
+            <p class="tagline"></p>
+        </header>
         
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="newsletters.html">Newsletter Archive</a>
+            <a href="index.html">HOME</a>
+            <a href="newsletters.html">NEWSLETTER ARCHIVE</a>
         </div>
         
-        <form id="newsletter-form">
-            <input type="email" id="email" placeholder="Your email address" required>
-            <button type="submit">Subscribe</button>
-        </form>
-        
-        <div id="success-message" class="message success">
-            Thanks! Please check your email to confirm your subscription.
+        <div class="main-content">
+            <!-- Newsletter signup form -->
+            <div class="newsletter-form">
+                <h2>CURATED DEALS, BITE-SIZED</h2>
+                <p class="subtitle">Join thousands getting hand-picked travel deals & destination guides every week</p>
+                
+                <form id="newsletter-form">
+                    <input type="email" id="email" placeholder="Your email address" required>
+                    <button type="submit">GET DEALS</button>
+                </form>
+                
+                <div id="success-message" class="message success">
+                    ✓ Thanks! Please check your email to confirm your subscription.
+                </div>
+                
+                <div id="error-message" class="message error">
+                    ✗ Sorry, something went wrong. Please try again.
+                </div>
+            </div>
+            
+            <!-- Features section with CSS pixel art -->
+            <div class="features">
+                <div class="feature-card">
+                    <div class="pixel-icon-container">
+                        <div class="pixel-plane"></div>
+                    </div>
+                    <h3 class="feature-title">AMAZING DEALS</h3>
+                    <p class="feature-description">We scour the web to find incredible flight deals like $363 to Aruba or £286 to Malaysia - all verified and ready to book</p>
+                </div>
+                <div class="feature-card">
+                    <div class="pixel-icon-container">
+                        <div class="pixel-map"></div>
+                    </div>
+                    <h3 class="feature-title">DESTINATION GUIDES</h3>
+                    <p class="feature-description">Get insider tips on must-visit attractions, local cuisine, cultural highlights, and practical visitor information</p>
+                </div>
+                <div class="feature-card">
+                    <div class="pixel-icon-container">
+                        <div class="pixel-star"></div>
+                    </div>
+                    <h3 class="feature-title">TRAVEL TIPS</h3>
+                    <p class="feature-description">Smart packing strategies, budget-friendly advice, and cultural etiquette to make your travels smoother</p>
+                </div>
+            </div>
+            
+            <!-- Recent newsletters preview -->
+            <div class="archive-section">
+                <h2 style="text-align: center;">RECENT NEWSLETTERS</h2>
+                <div class="archive-grid" id="recent-newsletters">
+                    <div class="archive-item">
+                        <span class="issue-badge">ISSUE #1</span>
+                        <h4 class="archive-title">Travel Deals: Aruba</h4>
+                        <p class="archive-date">April 22, 2025</p>
+                        <p style="font-size: 16px; margin-top: 10px; color: #666; line-height: 1.6;">
+                            ▸ $363 flights to paradise<br>
+                            ▸ Best beaches & attractions<br>
+                            ▸ Local cuisine guide
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Sample Deal Showcase -->
+                <div style="background: linear-gradient(135deg, #fff4f0 0%, #fef9f0 100%); border-radius: 15px; padding: 30px; margin: 40px 0; text-align: center;">
+                    <h3 style="font-family: 'Press Start 2P', cursive; color: #e8702a; margin-bottom: 20px;">THIS WEEK'S TOP DEALS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div style="padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <span style="font-size: 30px; filter: contrast(1.5) saturate(1.2); image-rendering: pixelated;">🇦🇼</span>
+                            <p style="font-weight: bold; color: #0c457d;">Aruba</p>
+                            <p style="color: #e8702a; font-size: 20px; font-weight: bold; font-family: 'Press Start 2P', cursive;">$363</p>
+                            <p style="font-size: 14px; color: #666;">from Newark</p>
+                        </div>
+                        <div style="padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <span style="font-size: 30px; filter: contrast(1.5) saturate(1.2); image-rendering: pixelated;">🇿🇦</span>
+                            <p style="font-weight: bold; color: #0c457d;">South Africa</p>
+                            <p style="color: #e8702a; font-size: 20px; font-weight: bold; font-family: 'Press Start 2P', cursive;">€354</p>
+                            <p style="font-size: 14px; color: #666;">from Prague</p>
+                        </div>
+                        <div style="padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <span style="font-size: 30px; filter: contrast(1.5) saturate(1.2); image-rendering: pixelated;">🇲🇾</span>
+                            <p style="font-weight: bold; color: #0c457d;">Malaysia</p>
+                            <p style="color: #e8702a; font-size: 20px; font-weight: bold; font-family: 'Press Start 2P', cursive;">£286</p>
+                            <p style="font-size: 14px; color: #666;">from London</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px; color: #666; font-size: 18px; font-family: 'VT323', monospace;">
+                        <span style="color: #3498db;">▪</span> Hotel -25% 
+                        <span style="color: #e8702a;">▪</span> Cards +350K 
+                        <span style="color: #27ae60;">▪</span> Eco-deals 
+                        <span style="color: #8e44ad;">▪</span>
+                    </p>
+                </div>
+            </div>
         </div>
         
-        <div id="error-message" class="message error">
-            Sorry, something went wrong. Please try again.
-        </div>
+        <footer>
+            <p class="footer-text">© 2025 BYTE SIZE TRAVEL DEALS | POWERED BY PIXELS & ALGORITHMS</p>
+            <div class="footer-links">
+                <a href="#">PRIVACY</a>
+                <a href="#">TERMS</a>
+                <a href="#">CONTACT</a>
+            </div>
+        </footer>
     </div>
-
+    
     <script>
+        // Generate pixel stars
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 50;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        generateStars();
+        
+        // Typing effect for tagline
+        const taglines = [
+            "[ YOUR WEEKLY DOSE OF WANDERLUST ]",
+            "[ CURATED DEALS FROM AROUND THE GLOBE ]",
+            "[ TRAVEL SMARTER, NOT HARDER ]",
+            "[ EXPLORE MORE, SPEND LESS ]",
+            "[ BITE-SIZED TRAVEL INSPIRATION ]"
+        ];
+        
+        let currentTagline = 0;
+        let currentChar = 0;
+        let isDeleting = false;
+        const taglineElement = document.querySelector('.tagline');
+        
+        function typeWriter() {
+            const text = taglines[currentTagline];
+            
+            if (!isDeleting) {
+                taglineElement.textContent = text.substring(0, currentChar + 1);
+                currentChar++;
+                
+                if (currentChar === text.length) {
+                    setTimeout(() => { isDeleting = true; typeWriter(); }, 2000);
+                    return;
+                }
+            } else {
+                taglineElement.textContent = text.substring(0, currentChar - 1);
+                currentChar--;
+                
+                if (currentChar === 0) {
+                    isDeleting = false;
+                    currentTagline = (currentTagline + 1) % taglines.length;
+                }
+            }
+            
+            const speed = isDeleting ? 30 : 50;
+            setTimeout(typeWriter, speed);
+        }
+        
+        setTimeout(typeWriter, 1000);
+        
+        // Form submission
         document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -38,7 +207,7 @@
             const successMessage = document.getElementById('success-message');
             const errorMessage = document.getElementById('error-message');
             
-            // Hide any previous messages
+            // Hide messages
             successMessage.style.display = 'none';
             errorMessage.style.display = 'none';
             
@@ -71,4 +240,3 @@
     </script>
 </body>
 </html>
-

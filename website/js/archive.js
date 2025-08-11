@@ -1,107 +1,156 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Fetch the newsletter metadata
-    fetch('/newsletters.json')
+document.addEventListener('DOMContentLoaded', () => {
+    loadNewsletters();
+    setupSearch();
+});
+
+let allNewsletters = [];
+let displayedNewsletters = [];
+
+function loadNewsletters() {
+    fetch('newsletters.json') // no "../" if newsletters.json is in the root next to newsletters.html
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load newsletter data');
-            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return response.json();
         })
-        .then(newsletters => {
-            // Sort by date (newest first)
-            newsletters.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // Display recent newsletters (top 10)
-            const recentList = document.getElementById('recent-list');
-            recentList.innerHTML = ''; // Clear loading message
-            
-            const recentNewsletters = newsletters.slice(0, 10);
-            recentNewsletters.forEach(newsletter => {
-                const item = document.createElement('li');
-                item.className = 'newsletter-item';
-                item.innerHTML = `
-                    <span class="issue-number">#${newsletter.issue}</span>
-                    <a href="${newsletter.path}">${newsletter.title}</a>
-                    <span class="issue-date">${formatDate(newsletter.date)}</span>
-                `;
-                recentList.appendChild(item);
-            });
-            
-            // Group by year and month for the archive
-            const archiveSection = document.getElementById('archive-content');
-            archiveSection.innerHTML = ''; // Clear loading message
-            
-            const newslettersByYear = groupByYear(newsletters);
-            
-            // Generate archive dropdowns
-            Object.keys(newslettersByYear).sort().reverse().forEach(year => {
-                const yearDetails = document.createElement('details');
-                yearDetails.className = 'archive-year';
-                
-                const yearSummary = document.createElement('summary');
-                yearSummary.textContent = year;
-                yearDetails.appendChild(yearSummary);
-                
-                const newslettersByMonth = groupByMonth(newslettersByYear[year]);
-                
-                Object.keys(newslettersByMonth).sort().reverse().forEach(month => {
-                    const monthDetails = document.createElement('details');
-                    monthDetails.className = 'archive-month';
-                    
-                    const monthSummary = document.createElement('summary');
-                    monthSummary.textContent = `${getMonthName(month)} (${newslettersByMonth[month].length} issues)`;
-                    monthDetails.appendChild(monthSummary);
-                    
-                    const monthList = document.createElement('ul');
-                    
-                    newslettersByMonth[month].forEach(newsletter => {
-                        const item = document.createElement('li');
-                        item.innerHTML = `
-                            <a href="${newsletter.path}">#${newsletter.issue}: ${formatDate(newsletter.date)} - ${newsletter.title}</a>
-                        `;
-                        monthList.appendChild(item);
-                    });
-                    
-                    monthDetails.appendChild(monthList);
-                    yearDetails.appendChild(monthDetails);
-                });
-                
-                archiveSection.appendChild(yearDetails);
-            });
+        .then(data => {
+            allNewsletters = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            displayedNewsletters = [...allNewsletters];
+            renderNewsletters();
+            updateCount();
         })
         .catch(error => {
             console.error('Error loading newsletters:', error);
-            document.getElementById('recent-list').innerHTML = '<li class="newsletter-item">Failed to load recent newsletters. Please try again later.</li>';
-            document.getElementById('archive-content').innerHTML = '<p>Failed to load archive. Please try again later.</p>';
+            showError();
         });
-});
+}
 
-// Helper functions
+function setupSearch() {
+    const searchInput = document.getElementById('search-newsletters');
+    if (!searchInput) return;
+
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(e.target.value.toLowerCase().trim());
+        }, 300);
+    });
+}
+
+function performSearch(query) {
+    if (!query) {
+        displayedNewsletters = [...allNewsletters];
+    } else {
+        displayedNewsletters = allNewsletters.filter(newsletter => {
+            const searchableText = [
+                newsletter.title.toLowerCase(),
+                newsletter.date,
+                `issue ${newsletter.issue}`,
+                `#${newsletter.issue}`
+            ].join(' ');
+            return searchableText.includes(query);
+        });
+    }
+    renderNewsletters();
+    updateCount();
+}
+
+function renderNewsletters() {
+    const container = document.getElementById('newsletter-list');
+    if (!container) return;
+
+    if (displayedNewsletters.length === 0) {
+        container.innerHTML = `
+            <div class="empty-archive">
+                <h3>NO MATCHES FOUND</h3>
+                <p>Try adjusting your search or browse all newsletters</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Group newsletters by year
+    const years = {};
+    displayedNewsletters.forEach(newsletter => {
+        const year = newsletter.date.split('-')[0];
+        if (!years[year]) years[year] = [];
+        years[year].push(newsletter);
+    });
+
+    let html = '';
+    Object.keys(years).sort((a, b) => b - a).forEach(year => {
+        html += `
+            <div class="year-section">
+                <div class="year-label">${year}</div>
+                <div class="newsletter-list">
+        `;
+        years[year].forEach(newsletter => {
+            html += createNewsletterItem(newsletter);
+        });
+        html += '</div></div>';
+    });
+
+    container.innerHTML = html;
+
+    // Click handler
+    container.querySelectorAll('.newsletter-item').forEach(item => {
+        item.addEventListener('click', () => {
+            window.location.href = item.dataset.path;
+        });
+    });
+}
+
+function createNewsletterItem(newsletter) {
+    const parts = newsletter.title.split(':');
+    const mainTitle = parts[0].trim();
+    const subtitle = parts[1] ? parts[1].trim() : '';
+
+    return `
+        <div class="newsletter-item" data-path="${newsletter.path}">
+            <div class="newsletter-number">#${newsletter.issue}</div>
+            <div class="newsletter-content">
+                <div class="newsletter-title">${mainTitle}</div>
+                <div class="newsletter-meta">
+                    ${formatDate(newsletter.date)}
+                    ${subtitle ? ` • ${subtitle}` : ''}
+                </div>
+            </div>
+            <div class="newsletter-arrow">→</div>
+        </div>
+    `;
+}
+
 function formatDate(dateStr) {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+                    'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 }
 
-function getMonthName(month) {
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                        'July', 'August', 'September', 'October', 'November', 'December'];
-    return monthNames[parseInt(month) - 1];
+function updateCount() {
+    const countElement = document.getElementById('result-count');
+    if (!countElement) return;
+    const total = allNewsletters.length;
+    const showing = displayedNewsletters.length;
+
+    countElement.textContent = 
+        showing === total
+            ? `${total} ${total === 1 ? 'ISSUE' : 'ISSUES'}`
+            : `${showing} OF ${total}`;
 }
 
-function groupByYear(newsletters) {
-    return newsletters.reduce((acc, newsletter) => {
-        const year = newsletter.date.split('-')[0];
-        if (!acc[year]) acc[year] = [];
-        acc[year].push(newsletter);
-        return acc;
-    }, {});
-}
-
-function groupByMonth(newsletters) {
-    return newsletters.reduce((acc, newsletter) => {
-        const month = newsletter.date.split('-')[1];
-        if (!acc[month]) acc[month] = [];
-        acc[month].push(newsletter);
-        return acc;
-    }, {});
+function showError() {
+    const container = document.getElementById('newsletter-list');
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-archive">
+                <h3>UNABLE TO LOAD ARCHIVE</h3>
+                <p>Please refresh the page or try again later</p>
+            </div>
+        `;
+    }
+    const countElement = document.getElementById('result-count');
+    if (countElement) {
+        countElement.textContent = 'ERROR';
+    }
 }

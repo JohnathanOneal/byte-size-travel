@@ -3,117 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Error</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .error-container {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 30px;
-            margin-top: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            color: #e74c3c;
-        }
-        
-        .icon {
-            font-size: 60px;
-            color: #e74c3c;
-            margin-bottom: 20px;
-        }
-        
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        
-        .button {
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 4px;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        
-        .button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <title>Oops! - Byte Size Travel Deals</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="error-container">
-        <div class="icon">!</div>
-        <h1>Subscription Error</h1>
-        <p>We encountered an issue while confirming your subscription.</p>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <h1 class="logo">BYTE SIZE</h1>
+            <p class="subtitle-logo">TRAVEL DEALS</p>
+        </header>
         
-        <div id="error-message" class="error-message">
-            The confirmation link may have expired or is invalid.
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="newsletters.html">NEWSLETTER ARCHIVE</a>
         </div>
         
-        <p>You can try the following:</p>
-        <ul style="text-align: left; display: inline-block;">
-            <li>Return to our homepage and try subscribing again</li>
-            <li>Check if you clicked the correct link from your email</li>
-            <li>Contact our support team if the issue persists</li>
-        </ul>
-        
-        <div>
-            <a href="/" class="button">Return to Homepage</a>
-            <a href="/newsletter" class="button">Try Again</a>
+        <div class="status-page">
+            <div class="status-box">
+                <div class="status-icon-large status-icon-error">✕</div>
+                
+                <h2 class="status-heading error">TURBULENCE DETECTED</h2>
+                
+                <p class="status-text">
+                    We hit a snag processing your subscription.
+                    Let's get you back on track!
+                </p>
+                
+                <div class="message error" id="error-details" style="display: block; margin: 30px 0; padding: 20px; font-size: 20px;">
+                    The confirmation link may have expired or is invalid.
+                </div>
+                
+                <div class="status-features">
+                    <h3>QUICK FIXES</h3>
+                    <ul>
+                        <li>Try subscribing again with a fresh start</li>
+                        <li>Check your email for the latest confirmation link</li>
+                        <li>Links expire after 24 hours for security</li>
+                        <li>Clear your browser cache and cookies</li>
+                        <li>Contact support@bytesizetravel.com for help</li>
+                    </ul>
+                </div>
+                
+                <div class="button-group">
+                    <button onclick="window.location.href='index.html'" 
+                            style="background: linear-gradient(135deg, #3498db 0%, #5aa3db 100%);">
+                        TRY AGAIN (BACK TO HOME)
+                    </button>
+                </div>
+            </div>
         </div>
+        
+        <footer>
+            <p class="footer-text">© 2025 BYTE SIZE TRAVEL DEALS | POWERED BY PIXELS & ALGORITHMS</p>
+            <div class="footer-links">
+                <a href="#">PRIVACY</a>
+                <a href="#">TERMS</a>
+                <a href="#">CONTACT</a>
+            </div>
+        </footer>
     </div>
-
+    
     <script>
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 50;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        generateStars();
+        
+        // Handle error reasons from URL
         document.addEventListener('DOMContentLoaded', function() {
-            // Get error reason from URL parameter
             const urlParams = new URLSearchParams(window.location.search);
             const reason = urlParams.get('reason');
-            const errorMessage = document.getElementById('error-message');
+            const errorDetails = document.getElementById('error-details');
             
-            // Set custom error message based on reason
             if (reason) {
-                let customMessage = 'An error occurred while processing your request.';
+                const errorMessages = {
+                    'missing-token': 'No confirmation token found. Please use the link from your email.',
+                    'Invalid-token-format': 'The confirmation link format is incorrect.',
+                    'Token-has-expired': 'This confirmation link has expired. Please subscribe again.',
+                    'Invalid-token-signature': 'Security verification failed. Please try subscribing again.',
+                    'update-failed': 'Database update failed. Please try again in a moment.',
+                    'system-error': 'Our system is temporarily down. Please try again later.'
+                };
                 
-                switch(reason) {
-                    case 'missing-token':
-                        customMessage = 'No confirmation token was provided.';
-                        break;
-                    case 'Invalid-token-format':
-                        customMessage = 'The confirmation link appears to be invalid.';
-                        break;
-                    case 'Token-has-expired':
-                        customMessage = 'The confirmation link has expired. Please request a new one.';
-                        break;
-                    case 'Invalid-token-signature':
-                        customMessage = 'The confirmation link appears to be invalid or has been tampered with.';
-                        break;
-                    case 'update-failed':
-                        customMessage = 'We couldn\'t update your subscription status. Please try again later.';
-                        break;
-                    case 'system-error':
-                        customMessage = 'A system error occurred. Please try again later.';
-                        break;
-                }
-                
-                errorMessage.textContent = customMessage;
+                errorDetails.textContent = errorMessages[reason] || 'An unexpected error occurred. Please try again.';
             }
         });
     </script>

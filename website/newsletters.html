@@ -3,40 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsletter Archive</title>
+    <title>Travel Archive - Byte Size Travel Deals</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="stars" id="stars"></div>
+    
     <div class="container">
-        <h1>Newsletter Archive</h1>
-        <p>Browse our past newsletters and travel guides.</p>
+        <header>
+            <h1 class="logo">BYTE SIZE</h1>
+            <p class="subtitle-logo">TRAVEL DEALS</p>
+        </header>
         
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="newsletters.html">Newsletter Archive</a>
+            <a href="index.html">HOME</a>
+            <a href="newsletters.html">NEWSLETTER ARCHIVE</a>
         </div>
         
-        <section id="recent-newsletters" class="text-left">
-            <h2>Recent Newsletters</h2>
-            <ul class="archive-list" id="recent-list">
-                <!-- JavaScript will populate this -->
-                <li class="newsletter-item">Loading recent newsletters...</li>
-            </ul>
-        </section>
-        
-        <section id="newsletter-archive" class="text-left">
-            <h2>All Newsletters</h2>
-            <div id="archive-content">
-                <!-- JavaScript will populate this -->
-                <p>Loading archive...</p>
+        <div class="archive-layout">
+            <div class="archive-hero">
+                <h1>DEAL ARCHIVE</h1>
+                <p>Every destination. Every deal. Ever sent.</p>
             </div>
-        </section>
-        
-        <div>
-            <a href="index.html" class="button">Back to Home</a>
+            
+            <div class="newsletters-container">
+                <div class="filter-bar">
+                    <input type="text" 
+                           id="search-newsletters" 
+                           placeholder="Search destinations, dates, or issue numbers...">
+                    <div class="filter-count" id="result-count">Loading...</div>
+                </div>
+                
+                <div id="newsletter-list" class="newsletter-list">
+                    <div class="loading-archive">
+                        Loading amazing deals<span class="loading-dots">...</span>
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <footer>
+            <p class="footer-text">© 2025 BYTE SIZE TRAVEL DEALS | POWERED BY PIXELS & ALGORITHMS</p>
+            <div class="footer-links">
+                <a href="#">PRIVACY</a>
+                <a href="#">TERMS</a>
+                <a href="#">CONTACT</a>
+            </div>
+        </footer>
     </div>
-
+    
     <script src="js/archive.js"></script>
+    <script>
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 50;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        generateStars();
+    </script>
 </body>
 </html>

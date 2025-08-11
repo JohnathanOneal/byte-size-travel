@@ -3,23 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Confirmed</title>
+    <title>Welcome Aboard! - Byte Size Travel Deals</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="stars" id="stars"></div>
+    
     <div class="container">
-        <div class="icon success-icon">✓</div>
-        <h1>Subscription Confirmed!</h1>
-        <p>Thank you for subscribing to our Travel Newsletter.</p>
-        <p>You'll start receiving our latest travel tips, destination guides, and exclusive offers directly to your inbox.</p>
-        <p>We're excited to have you join our community of travel enthusiasts!</p>
+        <header>
+            <h1 class="logo">BYTE SIZE</h1>
+            <p class="subtitle-logo">TRAVEL DEALS</p>
+        </header>
         
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="newsletters.html">Newsletter Archive</a>
+            <a href="index.html">HOME</a>
+            <a href="newsletters.html">NEWSLETTER ARCHIVE</a>
         </div>
         
-        <a href="index.html" class="button">Return to Homepage</a>
+        <div class="status-page">
+            <div class="status-box">
+                <div class="status-icon-large status-icon-success">✓</div>
+                
+                <h2 class="status-heading success">WELCOME ABOARD!</h2>
+                
+                <p class="status-text">
+                    Your journey with Byte Size Travel Deals begins now.
+                    Get ready for incredible destinations and unbeatable deals!
+                </p>
+                
+                <div class="status-features">
+                    <h3>WHAT'S COMING YOUR WAY</h3>
+                    <ul>
+                        <li>Weekly hand-picked flight deals from $200</li>
+                        <li>Hidden gem destinations before they trend</li>
+                        <li>Mistake fares and flash sales alerts</li>
+                        <li>Local tips from seasoned travelers</li>
+                        <li>Exclusive partner discounts up to 40% off</li>
+                    </ul>
+                </div>
+                
+                <p class="status-text">
+                    Check your inbox for our welcome email with your first set of deals!
+                </p>
+                
+                <div class="button-group">
+                    <button onclick="window.location.href='newsletters.html'">
+                        EXPLORE PAST DEALS
+                    </button>
+                    <button onclick="window.location.href='index.html'" 
+                            style="background: linear-gradient(135deg, #3498db 0%, #5aa3db 100%);">
+                        BACK TO HOME
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p class="footer-text">© 2025 BYTE SIZE TRAVEL DEALS | POWERED BY PIXELS & ALGORITHMS</p>
+            <div class="footer-links">
+                <a href="#">PRIVACY</a>
+                <a href="#">TERMS</a>
+                <a href="#">CONTACT</a>
+            </div>
+        </footer>
     </div>
+    
+    <script>
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 50;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        generateStars();
+    </script>
 </body>
 </html>
