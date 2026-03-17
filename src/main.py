@@ -46,10 +46,7 @@ def main():
     
     # process data adding enriched metadata
     processed_db = ProcessedDatabase("main")
-    enricher = ArticleEnricher(
-        processed_db=processed_db,
-        openai_model=os.getenv('OPENAI_MODEL')
-    )
+    enricher = ArticleEnricher(processed_db=processed_db)
     processed_count = enricher.process_pending_articles()
     logger.info(f"Processed {processed_count} new articles")
     
@@ -60,7 +57,7 @@ def main():
 
     # Generate the newsletter
     newsletter_writer = NewsletterWriter(processed_db)
-    json_data = newsletter_writer.generate_newsletter(newsletter_content, mode="test")
+    json_data = newsletter_writer.generate_newsletter(newsletter_content, mode="real")
 
     # Clean up
     processed_db.conn.close()

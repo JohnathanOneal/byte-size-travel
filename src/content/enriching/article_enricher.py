@@ -8,7 +8,7 @@ from models.schemas import ProcessedArticle
 from config.logging_config import fetch_logger as logger
 
 class ArticleEnricher:
-    def __init__(self, processed_db: ProcessedDatabase, openai_model: str = "gpt-4o-mini"):
+    def __init__(self, processed_db: ProcessedDatabase, openai_model: str = "gpt-4.1-mini-2025-04-14"):
         self.processed_db = processed_db
         self.llm = OpenAIClient(model=openai_model)
         logger.info(f"ArticleEnricher initialized with model: {openai_model}")

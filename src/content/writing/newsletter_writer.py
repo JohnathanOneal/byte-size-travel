@@ -10,7 +10,7 @@ from services.openai.openai_client import OpenAIClient
 from config.logging_config import fetch_logger as logger
 
 class NewsletterWriter:
-    def __init__(self, processed_db, openai_model: str = "gpt-4o-mini"):
+    def __init__(self, processed_db, openai_model: str = "gpt-4.1-mini-2025-04-14"):
         self.processed_db = processed_db
         self.llm = OpenAIClient(model=openai_model)
         logger.info(f"NewsletterWriter initialized with model: {openai_model}")
@@ -188,7 +188,7 @@ class NewsletterWriter:
                 json.dump(newsletter_json, f, indent=4)
             logger.info(f"Saved JSON data to {filepath}")
 
-            if mode.lower == "real":
+            if mode.lower() == "real":
                 with open(os.getenv("UNPROCESSED_TEXT_FILE"), 'a') as file_list:
                     file_list.write(f"{filepath}\n")
                 logger.info(f"Added {filepath} to newsletter files list")

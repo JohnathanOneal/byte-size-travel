@@ -1,38 +1,24 @@
-// fill out handle bars templates with json data 
 import fs from 'fs';
 import Handlebars from 'handlebars';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { createReadStream } from 'fs';
+import { createInterface } from 'readline';
 import dotenv from 'dotenv';
 
-// Get current directory (ES modules don't have __dirname)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config({ path: '../.env' });
 
-// Load .env file from parent directory
-const envPath = path.join(__dirname, '..', '.env');
-dotenv.config({ path: envPath });
+const template = Handlebars.compile(fs.readFileSync(process.env.WEB_TEMPLATE_ONE_FILE, 'utf8'));
+const outputPath = process.env.WEBSITE_NEWSLETTER_DIR
 
-// Load paths from environment variables with fallbacks
-const templatePath = process.env.TEMPLATE_PATH || path.join(__dirname, 'template.html');
-const dataPath = process.env.DATA_PATH || path.join(__dirname, 'data.json');
-const outputPath = process.env.OUTPUT_PATH || path.join(__dirname, 'output.html');
+export async function processLines() {
+  const rl = createInterface({ input: createReadStream(process.env.UNPROCESSED_TEXT_FILE) });
 
-// 1. Load the template file
-const templateSource = fs.readFileSync(templatePath, 'utf-8');
-console.log(`Template loaded from: ${templatePath}`);
+  for await (const line of rl) {
+    if (!line.trim()) continue;
+    
+    const data = JSON.parse(fs.readFileSync(line.trim(), 'utf8'));
+    fs.writeFileSync(outputPath, template(data), 'utf8');
+  }
+}
 
-// 2. Compile the Handlebars template
-const template = Handlebars.compile(templateSource);
-
-// 3. Load the JSON data
-const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-console.log(`Data loaded from: ${dataPath}`);
-
-// 4. Process the template with the data
-const processedHTML = template(data);
-
-// 5. Output the result to a file
-fs.writeFileSync(outputPath, processedHTML);
-
-console.log(`HTML output successfully written to: ${outputPath}`);
+processLines();
