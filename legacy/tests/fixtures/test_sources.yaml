@@ -1,0 +1,14 @@
+sources:
+  - name: "Test Feed"
+    url: "https://www.nomadicmatt.com/feed/"
+    category: "travel_tips"
+    quality_score: 8
+    active: true
+    type: "rss"
+
+  - name: "Travel Zoo"
+    url: "https://www.travelzoo.com/feed/"
+    category: "travel_tips"
+    active: true
+    quality_score: 9
+    type: "rss"
