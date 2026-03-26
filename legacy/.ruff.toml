@@ -1,0 +1,21 @@
+target-version = "py312"
+line-length = 88
+
+[lint]
+select = ["ALL"]
+ignore = [
+    "D",      # pydocstyle -- skip mandatory docstrings everywhere
+    "FIX",    # flake8-fixme -- allow TODO/FIXME comments
+    "TD",     # flake8-todos -- don't enforce TODO format
+    "CPY",    # flake8-copyright -- no copyright headers
+    "COM812", # trailing commas -- conflicts with formatter
+]
+
+[lint.per-file-ignores]
+"tests/**" = [
+    "S101",     # assert is fine in tests
+    "PLR2004",  # magic values in assertions are fine in tests
+]
+
+[format]
+quote-style = "double"

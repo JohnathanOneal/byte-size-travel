@@ -1,0 +1,39 @@
+[project]
+name = "bst"
+version = "0.1.0"
+description = "Content curation dashboard for Daily Drop"
+readme = { content-type = "text/plain", text = "" }
+license = { text = "MIT" }
+authors = [
+    { name = "Johnathan Oneal", email = "johmathanoneal@gmail.com" },
+]
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4",
+    "fastapi",
+    "feedparser",
+    "openai",
+    "pydantic-settings",
+    "requests",
+    "structlog",
+    "uvicorn[standard]",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.2,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.0",
+    "pytest>=9.0.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.11.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "network: marks tests that require network access (deselect with '-m \"not network\"')",
+    "ai: marks tests that call the OpenAI API (deselect with '-m \"not ai\"')",
+]
